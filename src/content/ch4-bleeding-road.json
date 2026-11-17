@@ -1,0 +1,635 @@
+{
+  "id": "ch4-bleeding-road",
+  "chapter": 4,
+  "title": "Road crash near the school",
+  "shortTitle": "Road crash",
+  "version": "0.1.0",
+  "scene": "road-crash",
+  "intro": "School is over. On the road outside, a young man has fallen off his motorbike. He is lying on the dirt at the side of the road with a deep cut on his forearm, and it is bleeding a lot. Cars and bajajs are still going past. Your friend is with you. In your school bag you have a clean T-shirt and a plastic bag.",
+  "sources": [
+    {
+      "id": "ifrc2025",
+      "title": "IFRC International First Aid, Resuscitation and Education Guidelines 2025",
+      "url": "https://www.ifrc.org/document/ifrc-international-first-aid-resuscitation-and-education-guidelines-2025"
+    }
+  ],
+  "characters": [
+    {
+      "id": "rider",
+      "name": "The rider",
+      "role": "casualty",
+      "description": "A young man in his twenties. He fell off his motorbike beside the road. A deep cut on his forearm is bleeding heavily. He is awake, scared and in pain."
+    },
+    {
+      "id": "friend",
+      "name": "Your friend",
+      "role": "friend",
+      "description": "Your classmate. Worried, but ready to help: can give a jacket and a scarf, and remembers what the school first aid club taught."
+    },
+    {
+      "id": "driver",
+      "name": "Bajaj driver",
+      "role": "bystander",
+      "description": "A bajaj driver who stopped to help. He means well but is in a hurry, and he gives wrong advice."
+    },
+    {
+      "id": "calltaker",
+      "name": "907 call-taker",
+      "role": "calltaker",
+      "description": "The ambulance call-taker on 907. Asks where you are and what happened, and reminds you what to do."
+    },
+    {
+      "id": "crew",
+      "name": "Ambulance crew",
+      "role": "adult",
+      "description": "The ambulance team. They take over when they arrive."
+    }
+  ],
+  "facts": [
+    {
+      "id": "scene_dangers",
+      "text": "He is on the dirt beside the road, not on the road itself. Cars pass close by, so kneel on his far side, away from the traffic. The motorbike lies at the edge of the road with its engine off."
+    },
+    { "id": "petrol", "text": "Petrol is leaking from the motorbike." },
+    { "id": "hand_covered", "text": "Your hand is inside a clean plastic bag." },
+    { "id": "soaked", "text": "Blood is soaking through the cloth." },
+    {
+      "id": "shock_signs",
+      "text": "He is pale, his skin is cold and sweaty, and he is breathing fast. These are signs of shock.",
+      "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+    },
+    { "id": "slowing", "text": "The bleeding is slowing down under your hands." },
+    { "id": "collapsed", "text": "He is very pale and only half awake. He has lost a lot of blood." }
+  ],
+  "phases": [
+    { "id": "arrive", "title": "At the roadside" },
+    { "id": "care", "title": "Stop the bleeding" },
+    { "id": "handover", "title": "The ambulance is here" }
+  ],
+  "startPhaseId": "arrive",
+  "startCasualty": "bleeding",
+  "initialFlags": {
+    "pressing": false,
+    "soaked": false,
+    "called_907": false,
+    "petrol": false
+  },
+  "actions": [
+    {
+      "id": "check_danger",
+      "label": "Look for danger",
+      "kind": "action",
+      "phases": ["arrive", "care"],
+      "repeatable": false,
+      "effects": [{ "type": "revealFact", "factId": "scene_dangers" }],
+      "hint": "Before you help, look around: cars, the motorbike, broken glass. Stay off the road."
+    },
+    {
+      "id": "warn_traffic",
+      "label": "Ask driver to warn cars",
+      "kind": "action",
+      "targetCharacterId": "driver",
+      "phases": ["arrive", "care"],
+      "repeatable": false,
+      "effects": [
+        { "type": "setFlag", "flag": "traffic_warned", "value": true },
+        { "type": "say", "characterId": "driver", "lineId": "driver_warn" }
+      ],
+      "hint": "An adult can warn drivers to slow down from the side of the road, for example with hazard lights."
+    },
+    {
+      "id": "stand_in_road",
+      "label": "Stop cars in the road",
+      "kind": "action",
+      "phases": ["arrive", "care"],
+      "repeatable": false,
+      "effects": [{ "type": "say", "characterId": "driver", "lineId": "driver_road" }],
+      "hint": "Is it safe for you to stand where cars are moving?"
+    },
+    {
+      "id": "call_907",
+      "label": "Call 907",
+      "kind": "call",
+      "targetCharacterId": "calltaker",
+      "phases": ["arrive", "care"],
+      "repeatable": false,
+      "effects": [
+        { "type": "setFlag", "flag": "called_907", "value": true },
+        { "type": "say", "characterId": "calltaker", "lineId": "calltaker_answer" },
+        { "type": "say", "characterId": "calltaker", "lineId": "calltaker_advice" }
+      ],
+      "hint": "Call 907 early. Say where you are and what happened. Put the phone on speaker so your hands stay free."
+    },
+    {
+      "id": "cover_hand",
+      "label": "Bag over your hand",
+      "kind": "action",
+      "phases": ["arrive"],
+      "repeatable": false,
+      "effects": [
+        { "type": "setFlag", "flag": "hand_covered", "value": true },
+        { "type": "revealFact", "factId": "hand_covered" }
+      ],
+      "hint": "No gloves? Put a clean plastic bag over your hand. It keeps his blood off your skin."
+    },
+    {
+      "id": "press_wound",
+      "label": "Press hard with cloth",
+      "kind": "action",
+      "phases": ["arrive", "care"],
+      "repeatable": true,
+      "requires": { "flag": "pressing", "equals": false },
+      "effects": [
+        { "type": "setFlag", "flag": "pressing", "value": true },
+        { "type": "setCasualty", "status": "pressure" },
+        { "type": "gotoPhase", "phaseId": "care" },
+        { "type": "say", "characterId": "rider", "lineId": "rider_press" }
+      ],
+      "hint": "Put the clean T-shirt right on the wound and press hard with both hands. Keep pressing."
+    },
+    {
+      "id": "add_cloth",
+      "label": "Add more cloth on top",
+      "kind": "action",
+      "phases": ["care"],
+      "repeatable": false,
+      "requires": { "flag": "soaked", "equals": true },
+      "effects": [
+        { "type": "setFlag", "flag": "pressing", "value": true },
+        { "type": "setCasualty", "status": "pressure" },
+        { "type": "say", "characterId": "friend", "lineId": "friend_more_cloth" }
+      ],
+      "hint": "Leave the soaked cloth where it is. Put more cloth on top and keep pressing."
+    },
+    {
+      "id": "lift_cloth",
+      "label": "Lift cloth to look",
+      "kind": "action",
+      "phases": ["care"],
+      "repeatable": false,
+      "requires": { "flag": "pressing", "equals": true },
+      "effects": [
+        { "type": "setFlag", "flag": "pressing", "value": false },
+        { "type": "setCasualty", "status": "bleeding" },
+        { "type": "say", "characterId": "friend", "lineId": "friend_pouring" }
+      ],
+      "hint": "If you lift the cloth, what happens to the clot that is forming under it?"
+    },
+    {
+      "id": "lift_bajaj",
+      "label": "Lift him onto bajaj",
+      "kind": "action",
+      "phases": ["arrive", "care"],
+      "repeatable": false,
+      "effects": [
+        { "type": "setFlag", "flag": "pressing", "value": false },
+        { "type": "setCasualty", "status": "bleeding" },
+        { "type": "say", "characterId": "rider", "lineId": "rider_moved" },
+        { "type": "say", "characterId": "friend", "lineId": "friend_lay_down" }
+      ],
+      "hint": "After a crash he may have injuries you cannot see. Is moving him safe?"
+    },
+    {
+      "id": "keep_still",
+      "label": "Tell him to lie still",
+      "kind": "action",
+      "targetCharacterId": "rider",
+      "phases": ["arrive", "care"],
+      "repeatable": false,
+      "effects": [{ "type": "say", "characterId": "rider", "lineId": "rider_still" }],
+      "hint": "After a motorbike crash there may be hidden injuries. Do not move him unless he is in danger where he is."
+    },
+    {
+      "id": "keep_warm",
+      "label": "Cover him to keep warm",
+      "kind": "action",
+      "phases": ["care"],
+      "repeatable": false,
+      "effects": [{ "type": "say", "characterId": "friend", "lineId": "friend_jacket" }],
+      "hint": "Losing blood makes people cold. Cover him with a jacket."
+    },
+    {
+      "id": "check_shock",
+      "label": "Look for signs of shock",
+      "kind": "question",
+      "targetCharacterId": "rider",
+      "phases": ["care"],
+      "repeatable": false,
+      "effects": [{ "type": "revealFact", "factId": "shock_signs" }],
+      "hint": "Look at his skin and his breathing. Pale, cold, sweaty skin and fast breathing mean shock."
+    },
+    {
+      "id": "reassure",
+      "label": "Talk to him calmly",
+      "kind": "action",
+      "targetCharacterId": "rider",
+      "phases": ["arrive", "care"],
+      "repeatable": false,
+      "effects": [{ "type": "say", "characterId": "rider", "lineId": "rider_calm" }],
+      "hint": "Tell him help is coming. A calm voice helps him stay still."
+    },
+    {
+      "id": "tourniquet_info",
+      "label": "What about a tourniquet?",
+      "kind": "question",
+      "targetCharacterId": "friend",
+      "phases": ["arrive", "care"],
+      "repeatable": false,
+      "effects": [{ "type": "say", "characterId": "friend", "lineId": "friend_tourniquet" }],
+      "hint": "Information only. Pressing hard on the wound comes first."
+    },
+    {
+      "id": "hand_over",
+      "label": "Hand over to the crew",
+      "kind": "action",
+      "targetCharacterId": "crew",
+      "phases": ["handover"],
+      "repeatable": false,
+      "effects": [
+        { "type": "say", "characterId": "crew", "lineId": "crew_thanks" },
+        { "type": "endGame", "outcome": "handover" }
+      ],
+      "hint": "Tell them what happened and what you did. Keep pressing until they take over."
+    }
+  ],
+  "timeline": [
+    {
+      "id": "driver_advice",
+      "atMs": 5000,
+      "effects": [{ "type": "say", "characterId": "driver", "lineId": "driver_bajaj" }]
+    },
+    {
+      "id": "petrol_seen",
+      "afterActionId": "check_danger",
+      "delayMs": 500,
+      "when": { "flag": "petrol", "equals": true },
+      "effects": [
+        { "type": "revealFact", "factId": "petrol" },
+        { "type": "say", "characterId": "friend", "lineId": "friend_petrol" }
+      ]
+    },
+    {
+      "id": "soak_through",
+      "afterActionId": "press_wound",
+      "delayMs": 20000,
+      "effects": [
+        { "type": "setFlag", "flag": "soaked", "value": true },
+        { "type": "revealFact", "factId": "soaked" },
+        { "type": "say", "characterId": "friend", "lineId": "friend_soaked" }
+      ]
+    },
+    {
+      "id": "look_advice",
+      "afterActionId": "press_wound",
+      "delayMs": 35000,
+      "when": { "flag": "pressing", "equals": true },
+      "effects": [{ "type": "say", "characterId": "driver", "lineId": "driver_look" }]
+    },
+    {
+      "id": "shock_cue",
+      "atMs": 50000,
+      "effects": [{ "type": "say", "characterId": "rider", "lineId": "rider_cold" }]
+    },
+    {
+      "id": "bleeding_slows",
+      "afterActionId": "add_cloth",
+      "delayMs": 25000,
+      "when": { "flag": "pressing", "equals": true },
+      "effects": [
+        { "type": "setCasualty", "status": "recovered" },
+        { "type": "revealFact", "factId": "slowing" },
+        { "type": "say", "characterId": "rider", "lineId": "rider_better" }
+      ]
+    },
+    {
+      "id": "collapse",
+      "atMs": 90000,
+      "when": { "flag": "pressing", "equals": false },
+      "effects": [
+        { "type": "setCasualty", "status": "collapsed" },
+        { "type": "revealFact", "factId": "collapsed" },
+        { "type": "say", "characterId": "friend", "lineId": "friend_collapsed" }
+      ]
+    },
+    {
+      "id": "ambulance_arrives",
+      "afterActionId": "call_907",
+      "delayMs": 90000,
+      "effects": [
+        { "type": "gotoPhase", "phaseId": "handover" },
+        { "type": "setCasualty", "status": "handover" },
+        { "type": "say", "characterId": "crew", "lineId": "crew_arrive" }
+      ]
+    },
+    {
+      "id": "other_driver_calls",
+      "atMs": 150000,
+      "when": { "flag": "called_907", "equals": false },
+      "effects": [{ "type": "say", "characterId": "driver", "lineId": "driver_called" }]
+    },
+    {
+      "id": "late_ambulance",
+      "atMs": 240000,
+      "when": { "flag": "called_907", "equals": false },
+      "effects": [
+        { "type": "gotoPhase", "phaseId": "handover" },
+        { "type": "setCasualty", "status": "handover" },
+        { "type": "say", "characterId": "crew", "lineId": "crew_arrive" }
+      ]
+    }
+  ],
+  "lines": [
+    { "id": "rider_open", "characterId": "rider", "text": "Aaah! My arm! Please help me!", "emotion": "pain" },
+    {
+      "id": "friend_open",
+      "characterId": "friend",
+      "text": "There is so much blood! What do we do?",
+      "emotion": "panicked"
+    },
+    {
+      "id": "driver_bajaj",
+      "characterId": "driver",
+      "text": "Lift him onto the bajaj and go.",
+      "emotion": "worried",
+      "wrongAdvice": true,
+      "correctionHarmId": "h_bajaj",
+      "ref": { "sourceId": "ifrc2025", "page": "307", "review": "pending" }
+    },
+    {
+      "id": "driver_warn",
+      "characterId": "driver",
+      "text": "OK. I will put my hazard lights on and wave cars to slow down, from the side of the road.",
+      "emotion": "calm",
+      "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+    },
+    {
+      "id": "driver_road",
+      "characterId": "driver",
+      "text": "Get off the road! A car nearly hit you!",
+      "emotion": "panicked",
+      "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+    },
+    {
+      "id": "calltaker_answer",
+      "characterId": "calltaker",
+      "text": "907 ambulance. Where are you, and what happened?",
+      "emotion": "calm"
+    },
+    {
+      "id": "calltaker_advice",
+      "characterId": "calltaker",
+      "text": "An ambulance is on the way. Press hard on the wound and do not lift the cloth. Keep him still and warm.",
+      "emotion": "calm",
+      "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+    },
+    {
+      "id": "rider_press",
+      "characterId": "rider",
+      "text": "Ow! It hurts... but please keep pressing.",
+      "emotion": "pain",
+      "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+    },
+    {
+      "id": "friend_more_cloth",
+      "characterId": "friend",
+      "text": "Here is my scarf. Put it on top and keep pressing.",
+      "emotion": "calm",
+      "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+    },
+    {
+      "id": "friend_soaked",
+      "characterId": "friend",
+      "text": "Blood is coming through the cloth!",
+      "emotion": "worried"
+    },
+    {
+      "id": "driver_look",
+      "characterId": "driver",
+      "text": "Take the cloth off and see if it has stopped.",
+      "emotion": "worried",
+      "wrongAdvice": true,
+      "correctionHarmId": "h_lift_cloth",
+      "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+    },
+    {
+      "id": "friend_pouring",
+      "characterId": "friend",
+      "text": "It is pouring out again! Press hard again!",
+      "emotion": "panicked",
+      "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+    },
+    { "id": "rider_moved", "characterId": "rider", "text": "Aaah! No, no! It hurts too much!", "emotion": "pain" },
+    {
+      "id": "friend_lay_down",
+      "characterId": "friend",
+      "text": "He is bleeding more! Lay him back down, gently.",
+      "emotion": "panicked",
+      "ref": { "sourceId": "ifrc2025", "page": "307", "review": "pending" }
+    },
+    { "id": "rider_still", "characterId": "rider", "text": "OK... I will try not to move.", "emotion": "calm" },
+    {
+      "id": "friend_jacket",
+      "characterId": "friend",
+      "text": "Here, take my jacket. Put it over him.",
+      "emotion": "calm",
+      "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+    },
+    { "id": "rider_cold", "characterId": "rider", "text": "I feel cold... and dizzy.", "emotion": "worried" },
+    {
+      "id": "rider_calm",
+      "characterId": "rider",
+      "text": "Thank you. I am scared, but I will stay still.",
+      "emotion": "worried"
+    },
+    { "id": "rider_better", "characterId": "rider", "text": "It does not hurt as much now.", "emotion": "calm" },
+    {
+      "id": "friend_collapsed",
+      "characterId": "friend",
+      "text": "He is not answering properly! He is so pale!",
+      "emotion": "panicked"
+    },
+    {
+      "id": "friend_tourniquet",
+      "characterId": "friend",
+      "text": "Our first aid club said: a tourniquet is a strap tightened above a wound. Trained people use a real one, made for the job. Only make one yourself if pressing hard does not stop the bleeding and nothing else works.",
+      "emotion": "calm",
+      "ref": { "sourceId": "ifrc2025", "page": "256", "review": "pending" }
+    },
+    {
+      "id": "friend_petrol",
+      "characterId": "friend",
+      "text": "Petrol is leaking! Keep everyone back, and nobody smoke here.",
+      "emotion": "worried",
+      "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+    },
+    {
+      "id": "driver_called",
+      "characterId": "driver",
+      "text": "I have called 907 for you. They are coming.",
+      "emotion": "calm"
+    },
+    {
+      "id": "crew_arrive",
+      "characterId": "crew",
+      "text": "Ambulance team. Well done. Keep pressing until we take over. What happened?",
+      "emotion": "calm",
+      "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+    },
+    {
+      "id": "crew_thanks",
+      "characterId": "crew",
+      "text": "Thank you. You kept the pressure on. We will take it from here.",
+      "emotion": "calm"
+    }
+  ],
+  "openingLineIds": ["rider_open", "friend_open"],
+  "rubric": {
+    "items": [
+      {
+        "id": "safety_first",
+        "description": "Looked for danger before helping",
+        "check": { "kind": "didBefore", "actionId": "check_danger", "beforeActionId": "press_wound" },
+        "points": 10,
+        "critical": true,
+        "teachingPoint": "Make sure it is safe before you help. Stay off the road and look for cars, petrol and broken glass. You cannot help him if you get hurt too.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      },
+      {
+        "id": "warn_traffic",
+        "description": "Asked someone to warn the traffic",
+        "check": { "kind": "did", "actionId": "warn_traffic" },
+        "points": 5,
+        "critical": false,
+        "teachingPoint": "Ask an adult to warn drivers from the side of the road, for example with hazard lights or by waving them to slow down.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      },
+      {
+        "id": "call_907",
+        "description": "Called 907 quickly",
+        "check": { "kind": "didWithin", "actionId": "call_907", "withinMs": 60000 },
+        "points": 15,
+        "critical": true,
+        "teachingPoint": "Call 907 early, or ask someone to call while you press. Say where you are and what happened.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      },
+      {
+        "id": "press_fast",
+        "description": "Pressed hard on the wound quickly",
+        "check": { "kind": "didWithin", "actionId": "press_wound", "withinMs": 45000 },
+        "points": 20,
+        "critical": true,
+        "teachingPoint": "Heavy bleeding can kill in minutes. Press hard, right on the wound, with a clean cloth, and keep pressing.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      },
+      {
+        "id": "protect_hand",
+        "description": "Covered your hand before touching blood",
+        "check": { "kind": "didBefore", "actionId": "cover_hand", "beforeActionId": "press_wound" },
+        "points": 5,
+        "critical": false,
+        "teachingPoint": "Wear gloves if you have them. If not, a clean plastic bag over your hand keeps blood off your skin.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      },
+      {
+        "id": "add_cloth",
+        "description": "Added cloth on top when blood soaked through",
+        "check": { "kind": "did", "actionId": "add_cloth" },
+        "points": 10,
+        "critical": true,
+        "teachingPoint": "Do not lift the cloth to look: that starts the bleeding again. If blood soaks through, put more cloth on top and keep pressing.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      },
+      {
+        "id": "keep_still",
+        "description": "Kept him still",
+        "check": { "kind": "did", "actionId": "keep_still" },
+        "points": 10,
+        "critical": true,
+        "teachingPoint": "After a crash there may be injuries you cannot see. Keep him still. Do not move him unless he is in danger where he is.",
+        "ref": { "sourceId": "ifrc2025", "page": "307", "review": "pending" }
+      },
+      {
+        "id": "keep_warm",
+        "description": "Kept him warm",
+        "check": { "kind": "did", "actionId": "keep_warm" },
+        "points": 5,
+        "critical": false,
+        "teachingPoint": "Losing blood makes a person cold, and cold makes shock worse. Cover him with a jacket or a blanket.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      },
+      {
+        "id": "watch_shock",
+        "description": "Watched for signs of shock",
+        "check": { "kind": "did", "actionId": "check_shock" },
+        "points": 5,
+        "critical": false,
+        "teachingPoint": "Watch for shock: pale, cold, sweaty skin and fast breathing. If you see it, keep pressing, keep him lying down and warm, and tell 907.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      },
+      {
+        "id": "reassure",
+        "description": "Talked to him calmly",
+        "check": { "kind": "did", "actionId": "reassure" },
+        "points": 5,
+        "critical": false,
+        "teachingPoint": "A calm voice helps. Tell him that help is coming. It helps him stay still.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      }
+    ],
+    "harms": [
+      {
+        "id": "h_lift_cloth",
+        "description": "Lifted the cloth to look",
+        "actionId": "lift_cloth",
+        "deduction": 25,
+        "teachingPoint": "Lifting the cloth breaks up the clot, and the bleeding starts again. Keep the cloth on and keep pressing. Add more cloth on top if blood soaks through.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      },
+      {
+        "id": "h_bajaj",
+        "description": "Lifted him onto the bajaj",
+        "actionId": "lift_bajaj",
+        "deduction": 25,
+        "teachingPoint": "After a crash he may have hidden injuries to the neck, back or legs, and moving him stops the pressure on the wound. Do not move him unless he is in danger. Wait for the ambulance.",
+        "ref": { "sourceId": "ifrc2025", "page": "307", "review": "pending" }
+      },
+      {
+        "id": "h_road",
+        "description": "Stood in the road to stop cars",
+        "actionId": "stand_in_road",
+        "deduction": 20,
+        "teachingPoint": "Never stand in moving traffic. Stay off the road, and ask an adult to warn drivers from the roadside.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      }
+    ],
+    "time": { "maxPoints": 10, "targetMs": 150000, "zeroAtMs": 300000 }
+  },
+  "maxDurationMs": 300000,
+  "variants": [
+    {
+      "id": "practice-a",
+      "label": "Practice A",
+      "finalOnly": false,
+      "flags": {},
+      "timelineAtMs": {},
+      "lineSwaps": {}
+    },
+    {
+      "id": "practice-b",
+      "label": "Practice B",
+      "finalOnly": false,
+      "flags": {},
+      "timelineAtMs": { "driver_advice": 2000, "shock_cue": 40000 },
+      "lineSwaps": {}
+    },
+    {
+      "id": "final-a",
+      "label": "Final A",
+      "finalOnly": true,
+      "flags": { "petrol": true },
+      "timelineAtMs": { "driver_advice": 3000, "shock_cue": 35000, "collapse": 60000 },
+      "lineSwaps": {}
+    }
+  ],
+  "disclaimer": "A practice game. It does not replace hands-on first aid training. In an emergency in Addis Ababa, call 907."
+}

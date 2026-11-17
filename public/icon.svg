@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- ISO 7010 style first aid sign: white cross on green. Never use the protected red cross,
+       red crescent or red crystal emblems. -->
+  <rect width="64" height="64" rx="12" fill="#15803d"/>
+  <rect x="26" y="12" width="12" height="40" fill="#ffffff"/>
+  <rect x="12" y="26" width="40" height="12" fill="#ffffff"/>
+</svg>

@@ -1,0 +1,534 @@
+{
+  "id": "ch5-burns-home",
+  "chapter": 5,
+  "title": "Hot water at home",
+  "shortTitle": "Hot water",
+  "version": "0.1.0",
+  "scene": "home-kitchen",
+  "intro": "You are at home after school. Your little brother, who is 8, pulls the kettle and hot water spills over his forearm. He wears a watch on that wrist. He screams with pain. Your aunt runs in from the next room. There is a tap with clean water at the kitchen sink, and clean plastic food wrap in the cupboard.",
+  "sources": [
+    {
+      "id": "ifrc2025",
+      "title": "IFRC International First Aid, Resuscitation and Education Guidelines 2025",
+      "url": "https://www.ifrc.org/document/ifrc-international-first-aid-resuscitation-and-education-guidelines-2025"
+    }
+  ],
+  "characters": [
+    {
+      "id": "brother",
+      "name": "Little brother",
+      "role": "casualty",
+      "description": "Your brother, about 8 years old. Hot water from the kettle spilled on his forearm. He is crying with pain. He wears a watch on that wrist."
+    },
+    {
+      "id": "aunt",
+      "name": "Your aunt",
+      "role": "adult",
+      "description": "Your aunt lives with the family. She loves him and wants to help, but she believes in old home remedies."
+    },
+    {
+      "id": "calltaker",
+      "name": "907 call-taker",
+      "role": "calltaker",
+      "description": "The 907 call-taker. Asks what happened and reminds you what to do for a burn."
+    }
+  ],
+  "facts": [
+    {
+      "id": "kettle_safe",
+      "text": "The kettle is out of reach and the stove is off. Nobody else can get burned."
+    },
+    { "id": "watch_off", "text": "His watch is off. The skin around a burn swells, and a watch can get tight." },
+    { "id": "blisters", "text": "Small blisters are coming up on the burn." },
+    { "id": "covered", "text": "The burn is covered loosely with clean plastic food wrap." }
+  ],
+  "phases": [
+    { "id": "kitchen", "title": "In the kitchen" },
+    { "id": "cooling", "title": "Cool the burn" },
+    { "id": "covered", "title": "After cooling" }
+  ],
+  "startPhaseId": "kitchen",
+  "startCasualty": "burn",
+  "initialFlags": {
+    "butter_advised": false,
+    "blisters": false
+  },
+  "actions": [
+    {
+      "id": "make_safe",
+      "label": "Make the kitchen safe",
+      "kind": "action",
+      "phases": ["kitchen", "cooling"],
+      "repeatable": false,
+      "effects": [{ "type": "revealFact", "factId": "kettle_safe" }],
+      "hint": "Move the hot kettle out of reach and turn off the stove, so nobody else gets burned."
+    },
+    {
+      "id": "cool_start",
+      "label": "Cool under the tap",
+      "kind": "action",
+      "phases": ["kitchen"],
+      "repeatable": false,
+      "effects": [
+        { "type": "setCasualty", "status": "cooling" },
+        { "type": "gotoPhase", "phaseId": "cooling" },
+        { "type": "addCounter", "counter": "cooling_minutes", "delta": 1 },
+        { "type": "say", "characterId": "brother", "lineId": "brother_cooling" }
+      ],
+      "hint": "Hold the burn under clean, cool running water. Start as fast as you can."
+    },
+    {
+      "id": "keep_cooling",
+      "label": "Keep cooling 1 min",
+      "kind": "action",
+      "phases": ["cooling"],
+      "repeatable": true,
+      "effects": [{ "type": "addCounter", "counter": "cooling_minutes", "delta": 1 }],
+      "hint": "Each tap is 1 more minute under the water. Cool for at least 10 minutes. 20 minutes is best."
+    },
+    {
+      "id": "remove_watch",
+      "label": "Take off his watch",
+      "kind": "action",
+      "targetCharacterId": "brother",
+      "phases": ["kitchen", "cooling"],
+      "repeatable": false,
+      "effects": [
+        { "type": "revealFact", "factId": "watch_off" },
+        { "type": "say", "characterId": "brother", "lineId": "brother_watch" }
+      ],
+      "hint": "A burn swells. Take off watches, rings and tight clothes near it, unless they are stuck to the skin."
+    },
+    {
+      "id": "keep_warm",
+      "label": "Keep him warm",
+      "kind": "action",
+      "targetCharacterId": "brother",
+      "phases": ["cooling"],
+      "repeatable": false,
+      "effects": [{ "type": "say", "characterId": "brother", "lineId": "brother_warm" }],
+      "hint": "Keep him warm with a dry cloth around the rest of his body. Cool the burn, not the child."
+    },
+    {
+      "id": "cover",
+      "label": "Cover with clean wrap",
+      "kind": "action",
+      "phases": ["kitchen", "cooling"],
+      "repeatable": false,
+      "effects": [
+        { "type": "setCasualty", "status": "recovered" },
+        { "type": "gotoPhase", "phaseId": "covered" },
+        { "type": "revealFact", "factId": "covered" },
+        { "type": "say", "characterId": "brother", "lineId": "brother_better" }
+      ],
+      "hint": "After cooling, lay clean plastic food wrap or a clean, non-fluffy cloth loosely over the burn. Do not wrap it tight."
+    },
+    {
+      "id": "call_907",
+      "label": "Call 907",
+      "kind": "call",
+      "targetCharacterId": "calltaker",
+      "phases": ["kitchen", "cooling", "covered"],
+      "repeatable": false,
+      "effects": [
+        { "type": "addCounter", "counter": "medical_help", "delta": 1 },
+        { "type": "say", "characterId": "calltaker", "lineId": "calltaker_answer" },
+        { "type": "say", "characterId": "calltaker", "lineId": "calltaker_advice" }
+      ],
+      "hint": "A child with a burn needs medical help. 907 can tell you what to do."
+    },
+    {
+      "id": "tell_aunt",
+      "label": "Tell aunt: only water",
+      "kind": "action",
+      "targetCharacterId": "aunt",
+      "phases": ["kitchen", "cooling", "covered"],
+      "repeatable": false,
+      "requires": { "flag": "butter_advised", "equals": true },
+      "effects": [{ "type": "say", "characterId": "aunt", "lineId": "aunt_agrees" }],
+      "hint": "Explain kindly: home remedies keep the heat in and can bring germs. Cool water is what helps."
+    },
+    {
+      "id": "go_health_centre",
+      "label": "Go to health centre",
+      "kind": "action",
+      "targetCharacterId": "aunt",
+      "phases": ["covered"],
+      "repeatable": false,
+      "effects": [
+        { "type": "addCounter", "counter": "medical_help", "delta": 1 },
+        { "type": "say", "characterId": "aunt", "lineId": "aunt_go" },
+        { "type": "endGame", "outcome": "health_centre" }
+      ],
+      "hint": "A child with a burn should be checked by a health worker. Go after cooling and covering."
+    },
+    {
+      "id": "harm_butter",
+      "label": "Put butter on it",
+      "kind": "action",
+      "phases": ["kitchen", "cooling", "covered"],
+      "repeatable": false,
+      "effects": [{ "type": "say", "characterId": "brother", "lineId": "brother_remedy" }],
+      "hint": "Does butter cool the skin, or keep the heat in?"
+    },
+    {
+      "id": "harm_toothpaste",
+      "label": "Put toothpaste on it",
+      "kind": "action",
+      "phases": ["kitchen", "cooling", "covered"],
+      "repeatable": false,
+      "effects": [{ "type": "say", "characterId": "brother", "lineId": "brother_remedy" }],
+      "hint": "Does toothpaste cool a burn, or trap the heat and bring germs?"
+    },
+    {
+      "id": "harm_egg",
+      "label": "Put raw egg on it",
+      "kind": "action",
+      "phases": ["kitchen", "cooling", "covered"],
+      "repeatable": false,
+      "effects": [{ "type": "say", "characterId": "brother", "lineId": "brother_remedy" }],
+      "hint": "Raw egg can carry germs. Is that safe on burned skin?"
+    },
+    {
+      "id": "harm_ice",
+      "label": "Put ice on it",
+      "kind": "action",
+      "phases": ["kitchen", "cooling", "covered"],
+      "repeatable": false,
+      "effects": [{ "type": "say", "characterId": "brother", "lineId": "brother_ice" }],
+      "hint": "Is ice gentle on burned skin, or can the cold hurt it more?"
+    },
+    {
+      "id": "harm_oil",
+      "label": "Rub oil on it",
+      "kind": "action",
+      "phases": ["kitchen", "cooling", "covered"],
+      "repeatable": false,
+      "effects": [{ "type": "say", "characterId": "brother", "lineId": "brother_remedy" }],
+      "hint": "Does oil cool the skin, or hold the heat in?"
+    },
+    {
+      "id": "harm_blisters",
+      "label": "Pop the blisters",
+      "kind": "action",
+      "phases": ["cooling", "covered"],
+      "repeatable": false,
+      "requires": { "flag": "blisters", "equals": true },
+      "effects": [{ "type": "say", "characterId": "brother", "lineId": "brother_sting" }],
+      "hint": "Blisters protect the skin under them. What happens if you break them?"
+    }
+  ],
+  "timeline": [
+    {
+      "id": "aunt_advice",
+      "atMs": 12000,
+      "effects": [
+        { "type": "setFlag", "flag": "butter_advised", "value": true },
+        { "type": "say", "characterId": "aunt", "lineId": "aunt_butter" }
+      ]
+    },
+    {
+      "id": "wants_out",
+      "afterActionId": "cool_start",
+      "delayMs": 8000,
+      "when": { "phaseId": "cooling" },
+      "effects": [{ "type": "say", "characterId": "brother", "lineId": "brother_wants_out" }]
+    },
+    {
+      "id": "blisters_appear",
+      "afterActionId": "cool_start",
+      "delayMs": 15000,
+      "effects": [
+        { "type": "setFlag", "flag": "blisters", "value": true },
+        { "type": "revealFact", "factId": "blisters" },
+        { "type": "say", "characterId": "brother", "lineId": "brother_blisters" }
+      ]
+    },
+    {
+      "id": "aunt_leaves",
+      "afterActionId": "cover",
+      "delayMs": 45000,
+      "effects": [
+        { "type": "say", "characterId": "aunt", "lineId": "aunt_leaving" },
+        { "type": "endGame", "outcome": "aunt_took_him" }
+      ]
+    },
+    {
+      "id": "no_cooling_end",
+      "atMs": 200000,
+      "when": { "phaseId": "kitchen" },
+      "effects": [
+        { "type": "say", "characterId": "aunt", "lineId": "aunt_leaving" },
+        { "type": "endGame", "outcome": "aunt_took_him" }
+      ]
+    }
+  ],
+  "lines": [
+    { "id": "brother_open", "characterId": "brother", "text": "Aaah! My arm! It burns!", "emotion": "pain" },
+    {
+      "id": "aunt_open",
+      "characterId": "aunt",
+      "text": "Oh no, the kettle! What do we do?",
+      "emotion": "panicked"
+    },
+    {
+      "id": "brother_cooling",
+      "characterId": "brother",
+      "text": "It is cold... but it feels a bit better.",
+      "emotion": "pain"
+    },
+    {
+      "id": "brother_wants_out",
+      "characterId": "brother",
+      "text": "It is so cold! Can I take my arm out now?",
+      "emotion": "worried"
+    },
+    {
+      "id": "brother_blisters",
+      "characterId": "brother",
+      "text": "There are little bubbles on my skin!",
+      "emotion": "worried"
+    },
+    {
+      "id": "aunt_butter",
+      "characterId": "aunt",
+      "text": "Put butter on it, it always works.",
+      "emotion": "calm",
+      "wrongAdvice": true,
+      "correctionHarmId": "h_butter",
+      "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+    },
+    {
+      "id": "aunt_toothpaste",
+      "characterId": "aunt",
+      "text": "Put toothpaste on it, it always works.",
+      "emotion": "calm",
+      "wrongAdvice": true,
+      "correctionHarmId": "h_toothpaste",
+      "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+    },
+    {
+      "id": "aunt_agrees",
+      "characterId": "aunt",
+      "text": "Only water? All right. You learned this at school, so I trust you.",
+      "emotion": "calm"
+    },
+    {
+      "id": "brother_watch",
+      "characterId": "brother",
+      "text": "OK, take it off. It feels tight.",
+      "emotion": "worried",
+      "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+    },
+    {
+      "id": "brother_warm",
+      "characterId": "brother",
+      "text": "That is better. I was getting cold.",
+      "emotion": "calm"
+    },
+    {
+      "id": "brother_better",
+      "characterId": "brother",
+      "text": "It does not hurt so much now.",
+      "emotion": "calm"
+    },
+    {
+      "id": "calltaker_answer",
+      "characterId": "calltaker",
+      "text": "907. What happened, and how old is he?",
+      "emotion": "calm"
+    },
+    {
+      "id": "calltaker_advice",
+      "characterId": "calltaker",
+      "text": "Keep the burn under cool running water for 20 minutes. Then cover it loosely with clean food wrap. A child with a burn should be seen at a health centre.",
+      "emotion": "calm",
+      "ref": { "sourceId": "ifrc2025", "page": "288", "review": "pending" }
+    },
+    {
+      "id": "brother_remedy",
+      "characterId": "brother",
+      "text": "Ow! It still burns! It hurts more!",
+      "emotion": "pain"
+    },
+    { "id": "brother_ice", "characterId": "brother", "text": "Ow! The ice hurts! It is too cold!", "emotion": "pain" },
+    { "id": "brother_sting", "characterId": "brother", "text": "Ow! That stings!", "emotion": "pain" },
+    {
+      "id": "aunt_go",
+      "characterId": "aunt",
+      "text": "Good. I will get a taxi, and we will take him to the health centre.",
+      "emotion": "calm"
+    },
+    {
+      "id": "aunt_leaving",
+      "characterId": "aunt",
+      "text": "I will take him to the health centre now.",
+      "emotion": "worried"
+    }
+  ],
+  "openingLineIds": ["brother_open", "aunt_open"],
+  "rubric": {
+    "items": [
+      {
+        "id": "cool_fast",
+        "description": "Started cooling under running water quickly",
+        "check": { "kind": "didWithin", "actionId": "cool_start", "withinMs": 30000 },
+        "points": 20,
+        "critical": true,
+        "teachingPoint": "Cool a burn as fast as you can, under clean, cool running water. Cooling stops the heat from going deeper.",
+        "ref": { "sourceId": "ifrc2025", "page": "288", "review": "pending" }
+      },
+      {
+        "id": "cool_10",
+        "description": "Cooled the burn for at least 10 minutes",
+        "check": { "kind": "countAtLeast", "counter": "cooling_minutes", "min": 10 },
+        "points": 20,
+        "critical": true,
+        "teachingPoint": "Cool for at least 10 minutes. It feels like a long time, but it stops the burn getting worse.",
+        "ref": { "sourceId": "ifrc2025", "page": "288", "review": "pending" }
+      },
+      {
+        "id": "cool_20",
+        "description": "Cooled the burn for 20 minutes",
+        "check": { "kind": "countAtLeast", "counter": "cooling_minutes", "min": 20 },
+        "points": 10,
+        "critical": false,
+        "teachingPoint": "20 minutes of cooling is best.",
+        "ref": { "sourceId": "ifrc2025", "page": "288", "review": "pending" }
+      },
+      {
+        "id": "watch_off",
+        "description": "Took off his watch before covering",
+        "check": { "kind": "didBefore", "actionId": "remove_watch", "beforeActionId": "cover" },
+        "points": 5,
+        "critical": false,
+        "teachingPoint": "Burns swell. Take off watches, rings and tight clothing near the burn early, unless they are stuck to the skin.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      },
+      {
+        "id": "kept_warm",
+        "description": "Kept him warm while the burn was cooled",
+        "check": { "kind": "did", "actionId": "keep_warm" },
+        "points": 5,
+        "critical": false,
+        "teachingPoint": "Cool the burn, not the child. While the burn is under the water, keep the rest of his body warm with a dry cloth: a child gets cold fast.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      },
+      {
+        "id": "cover_loosely",
+        "description": "Covered the burn loosely after cooling",
+        "check": { "kind": "did", "actionId": "cover" },
+        "points": 10,
+        "critical": false,
+        "teachingPoint": "After cooling, lay clean plastic food wrap or a clean, non-fluffy cloth loosely over the burn. Fluffy cloth sticks to the wound.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      },
+      {
+        "id": "medical_help",
+        "description": "Got medical help for him",
+        "check": { "kind": "countAtLeast", "counter": "medical_help", "min": 1 },
+        "points": 10,
+        "critical": true,
+        "teachingPoint": "A child with a burn should see a health worker: call 907 or go to a health centre. Large burns, and burns on the face, hands or genitals, always need medical help.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      },
+      {
+        "id": "make_safe",
+        "description": "Made the kitchen safe",
+        "check": { "kind": "did", "actionId": "make_safe" },
+        "points": 5,
+        "critical": false,
+        "teachingPoint": "Check for danger: move the hot kettle and turn off the stove, so nobody else gets hurt.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      },
+      {
+        "id": "myth_busted",
+        "description": "Told your aunt why not to use home remedies",
+        "check": { "kind": "did", "actionId": "tell_aunt" },
+        "points": 5,
+        "critical": false,
+        "teachingPoint": "Butter, oil, toothpaste and egg keep the heat in and can bring germs. Ice can damage the skin. Only cool water helps.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      }
+    ],
+    "harms": [
+      {
+        "id": "h_butter",
+        "description": "Put butter on the burn",
+        "actionId": "harm_butter",
+        "deduction": 15,
+        "teachingPoint": "Butter keeps the heat in the skin and can bring germs. Use only clean, cool running water.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      },
+      {
+        "id": "h_toothpaste",
+        "description": "Put toothpaste on the burn",
+        "actionId": "harm_toothpaste",
+        "deduction": 15,
+        "teachingPoint": "Toothpaste does not cool a burn. It traps the heat, stings and can bring germs.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      },
+      {
+        "id": "h_egg",
+        "description": "Put raw egg on the burn",
+        "actionId": "harm_egg",
+        "deduction": 15,
+        "teachingPoint": "Raw egg can carry germs into burned skin and cause an infection.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      },
+      {
+        "id": "h_ice",
+        "description": "Put ice on the burn",
+        "actionId": "harm_ice",
+        "deduction": 15,
+        "teachingPoint": "Ice is too cold. It can damage burned skin even more. Use cool running water, not ice.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      },
+      {
+        "id": "h_oil",
+        "description": "Rubbed oil on the burn",
+        "actionId": "harm_oil",
+        "deduction": 15,
+        "teachingPoint": "Oil holds the heat in the skin and can bring germs.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      },
+      {
+        "id": "h_blisters",
+        "description": "Popped the blisters",
+        "actionId": "harm_blisters",
+        "deduction": 15,
+        "teachingPoint": "Do not burst blisters. They protect the skin underneath from germs.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      }
+    ],
+    "time": { "maxPoints": 10, "targetMs": 120000, "zeroAtMs": 240000 }
+  },
+  "maxDurationMs": 240000,
+  "variants": [
+    {
+      "id": "practice-a",
+      "label": "Practice A",
+      "finalOnly": false,
+      "flags": {},
+      "timelineAtMs": {},
+      "lineSwaps": {}
+    },
+    {
+      "id": "practice-b",
+      "label": "Practice B",
+      "finalOnly": false,
+      "flags": {},
+      "timelineAtMs": { "aunt_advice": 5000 },
+      "lineSwaps": {}
+    },
+    {
+      "id": "final-a",
+      "label": "Final A",
+      "finalOnly": true,
+      "flags": {},
+      "timelineAtMs": { "aunt_advice": 3000 },
+      "lineSwaps": { "aunt_butter": "aunt_toothpaste" }
+    }
+  ],
+  "disclaimer": "A practice game. It does not replace hands-on first aid training. In an emergency in Addis Ababa, call 907."
+}

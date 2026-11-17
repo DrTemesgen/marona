@@ -1,0 +1,11 @@
+node_modules/
+dist/
+dev-dist/
+data/
+test-results/
+playwright-report/
+*.db
+*.db-journal
+.env*
+!.env.example
+.vercel/

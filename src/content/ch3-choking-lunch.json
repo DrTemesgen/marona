@@ -1,0 +1,2347 @@
+{
+  "id": "ch3-choking-lunch",
+  "chapter": 3,
+  "title": "Lunch break",
+  "shortTitle": "Choking",
+  "version": "0.1.0",
+  "scene": "lunch-break",
+  "intro": "It is lunch break in the school yard. Your classmate is eating and laughing with friends. Suddenly she starts to cough and holds her throat. Help her.",
+  "sources": [
+    {
+      "id": "ifrc2025",
+      "title": "IFRC International First Aid, Resuscitation and Education Guidelines 2025",
+      "url": "https://www.ifrc.org/document/ifrc-international-first-aid-resuscitation-and-education-guidelines-2025"
+    }
+  ],
+  "characters": [
+    {
+      "id": "girl",
+      "name": "Classmate",
+      "role": "casualty",
+      "description": "A girl in your class who is choking on a piece of food."
+    },
+    {
+      "id": "friend",
+      "name": "Your friend",
+      "role": "friend",
+      "description": "Your classmate, who stays with you and can call 907."
+    },
+    {
+      "id": "student",
+      "name": "Another student",
+      "role": "bystander",
+      "description": "A student nearby who wants to help but gives wrong advice."
+    },
+    {
+      "id": "teacher",
+      "name": "Teacher",
+      "role": "adult",
+      "description": "A teacher who comes over after the food is out."
+    },
+    {
+      "id": "crew",
+      "name": "Ambulance crew",
+      "role": "adult",
+      "description": "The ambulance team who take over when they arrive."
+    }
+  ],
+  "facts": [
+    {
+      "id": "fact_cough",
+      "text": "She can cough and make sounds, so some air is getting in."
+    },
+    {
+      "id": "fact_blocked",
+      "text": "She cannot cough, speak or breathe. The food is blocking her airway."
+    },
+    {
+      "id": "fact_unresponsive",
+      "text": "She does not respond and is not breathing normally."
+    }
+  ],
+  "phases": [
+    {
+      "id": "coughing",
+      "title": "She is coughing"
+    },
+    {
+      "id": "severe",
+      "title": "She cannot breathe"
+    },
+    {
+      "id": "recovered",
+      "title": "The food is out"
+    },
+    {
+      "id": "arrest",
+      "title": "She stops responding"
+    }
+  ],
+  "startPhaseId": "coughing",
+  "startCasualty": "choking",
+  "initialFlags": {
+    "blowsWork": false,
+    "thrustsWork": false
+  },
+  "actions": [
+    {
+      "id": "ask_choking",
+      "label": "Ask: Are you choking?",
+      "kind": "question",
+      "targetCharacterId": "girl",
+      "phases": [
+        "coughing",
+        "severe"
+      ],
+      "effects": [
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_nods"
+        }
+      ],
+      "hint": "Ask her straight away. If she nods, she is choking."
+    },
+    {
+      "id": "encourage_cough",
+      "label": "Tell her: keep coughing",
+      "kind": "action",
+      "targetCharacterId": "girl",
+      "phases": [
+        "coughing"
+      ],
+      "effects": [
+        {
+          "type": "revealFact",
+          "factId": "fact_cough"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_coughs_harder"
+        }
+      ],
+      "hint": "If she can cough, coughing is the best way to clear it. Stay with her and tell her to keep coughing."
+    },
+    {
+      "id": "back_blow_early",
+      "label": "Give a back blow",
+      "kind": "action",
+      "targetCharacterId": "girl",
+      "phases": [
+        "coughing"
+      ],
+      "effects": [
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_early_blow"
+        }
+      ],
+      "hint": "Look: can she still cough and make sounds? What works best right now?"
+    },
+    {
+      "id": "give_water",
+      "label": "Give her some water",
+      "kind": "action",
+      "targetCharacterId": "girl",
+      "phases": [
+        "coughing",
+        "severe"
+      ],
+      "effects": [
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_water"
+        }
+      ],
+      "hint": "Can she swallow while her throat is blocked?"
+    },
+    {
+      "id": "fingers_in_mouth",
+      "label": "Put fingers in her mouth",
+      "kind": "action",
+      "targetCharacterId": "girl",
+      "phases": [
+        "coughing",
+        "severe"
+      ],
+      "effects": [
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_fingers"
+        }
+      ],
+      "hint": "Fingers can push the food further down. Is there a safer way?"
+    },
+    {
+      "id": "leave_for_teacher",
+      "label": "Run to find a teacher",
+      "kind": "action",
+      "phases": [
+        "coughing",
+        "severe"
+      ],
+      "effects": [
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_dont_leave"
+        }
+      ],
+      "hint": "Should she be left alone while she is choking? Who else could go?"
+    },
+    {
+      "id": "lean_forward",
+      "label": "Lean her forward",
+      "kind": "action",
+      "targetCharacterId": "girl",
+      "phases": [
+        "severe"
+      ],
+      "effects": [
+        {
+          "type": "setCasualty",
+          "status": "back_blows"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_leaned"
+        }
+      ],
+      "hint": "Stand to her side, a little behind. Hold her chest with one hand and lean her well forward, so the food comes out of her mouth."
+    },
+    {
+      "id": "back_blow",
+      "label": "Give a back blow",
+      "kind": "action",
+      "targetCharacterId": "girl",
+      "phases": [
+        "severe"
+      ],
+      "repeatable": true,
+      "effects": [
+        {
+          "type": "addCounter",
+          "counter": "backBlows",
+          "delta": 1
+        },
+        {
+          "type": "setCasualty",
+          "status": "back_blows"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_back_blow"
+        }
+      ],
+      "hint": "Hit firmly between her shoulder blades with the heel of your hand. Give up to 5 blows. Stop if the food comes out."
+    },
+    {
+      "id": "abdominal_thrust",
+      "label": "Give an abdominal thrust",
+      "kind": "action",
+      "targetCharacterId": "girl",
+      "phases": [
+        "severe"
+      ],
+      "repeatable": true,
+      "requires": {
+        "counter": "backBlows",
+        "atLeast": 5
+      },
+      "effects": [
+        {
+          "type": "addCounter",
+          "counter": "thrusts",
+          "delta": 1
+        },
+        {
+          "type": "setCasualty",
+          "status": "abdominal_thrusts"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_thrust"
+        }
+      ],
+      "hint": "If 5 back blows do not work: stand behind her, put a fist just above her belly button, hold it with your other hand and pull sharply in and up. Up to 5, then back blows again."
+    },
+    {
+      "id": "ask_friend_call",
+      "label": "Ask a friend to call 907",
+      "kind": "action",
+      "targetCharacterId": "friend",
+      "phases": [
+        "severe",
+        "arrest"
+      ],
+      "effects": [
+        {
+          "type": "setFlag",
+          "flag": "called907",
+          "value": true
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_calling"
+        }
+      ],
+      "hint": "Do not stop helping her to make the call yourself. Send your friend to call 907 now."
+    },
+    {
+      "id": "comfort",
+      "label": "Stay with her, calm her",
+      "kind": "action",
+      "targetCharacterId": "girl",
+      "phases": [
+        "recovered"
+      ],
+      "effects": [
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_thanks"
+        }
+      ],
+      "hint": "Stay with her. Let her sit and rest. Tell her she is safe now."
+    },
+    {
+      "id": "get_checked",
+      "label": "Get her a health check",
+      "kind": "action",
+      "targetCharacterId": "teacher",
+      "phases": [
+        "recovered"
+      ],
+      "effects": [
+        {
+          "type": "say",
+          "characterId": "teacher",
+          "lineId": "teacher_check"
+        },
+        {
+          "type": "endGame",
+          "outcome": "recovered"
+        }
+      ],
+      "hint": "Tell a teacher. She should see a health worker: back blows and thrusts can hurt, and a bit of food can stay behind."
+    },
+    {
+      "id": "start_compressions",
+      "label": "Start chest compressions",
+      "kind": "rhythm",
+      "targetCharacterId": "girl",
+      "phases": [
+        "arrest"
+      ],
+      "repeatable": true,
+      "effects": [
+        {
+          "type": "addCounter",
+          "counter": "compressions",
+          "delta": 1
+        },
+        {
+          "type": "setCasualty",
+          "status": "cpr"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cpr"
+        }
+      ],
+      "hint": "Lay her on her back. Push hard and fast in the centre of her chest, 100 to 120 times a minute. Keep going until help takes over."
+    },
+    {
+      "id": "wait_wake",
+      "label": "Wait for her to wake up",
+      "kind": "action",
+      "phases": [
+        "arrest"
+      ],
+      "effects": [
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_not_waking"
+        }
+      ],
+      "hint": "She is not responding and not breathing normally. Can waiting help her?"
+    }
+  ],
+  "timeline": [
+    {
+      "id": "water_advice",
+      "atMs": 5000,
+      "when": {
+        "phaseId": "coughing"
+      },
+      "effects": [
+        {
+          "type": "say",
+          "characterId": "student",
+          "lineId": "student_water"
+        }
+      ]
+    },
+    {
+      "id": "cannot_breathe",
+      "atMs": 12000,
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "severe"
+        },
+        {
+          "type": "setCasualty",
+          "status": "choking"
+        },
+        {
+          "type": "revealFact",
+          "factId": "fact_blocked"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cannot_breathe"
+        }
+      ]
+    },
+    {
+      "id": "finger_advice",
+      "atMs": 15000,
+      "when": {
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "say",
+          "characterId": "student",
+          "lineId": "student_fingers"
+        }
+      ]
+    },
+    {
+      "id": "friend_907_update",
+      "afterActionId": "ask_friend_call",
+      "delayMs": 8000,
+      "effects": [
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_907_coming"
+        }
+      ]
+    },
+    {
+      "id": "still_stuck",
+      "afterActionId": "back_blow",
+      "delayMs": 7000,
+      "when": {
+        "flag": "thrustsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_still_stuck"
+        }
+      ]
+    },
+    {
+      "id": "clear_blows_01",
+      "afterActionId": "back_blow",
+      "delayMs": 1000,
+      "when": {
+        "counter": "backBlows",
+        "atLeast": 3,
+        "flag": "blowsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_blows_02",
+      "afterActionId": "back_blow",
+      "delayMs": 2000,
+      "when": {
+        "counter": "backBlows",
+        "atLeast": 3,
+        "flag": "blowsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_blows_03",
+      "afterActionId": "back_blow",
+      "delayMs": 3000,
+      "when": {
+        "counter": "backBlows",
+        "atLeast": 3,
+        "flag": "blowsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_blows_04",
+      "afterActionId": "back_blow",
+      "delayMs": 4000,
+      "when": {
+        "counter": "backBlows",
+        "atLeast": 3,
+        "flag": "blowsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_blows_05",
+      "afterActionId": "back_blow",
+      "delayMs": 5000,
+      "when": {
+        "counter": "backBlows",
+        "atLeast": 3,
+        "flag": "blowsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_blows_06",
+      "afterActionId": "back_blow",
+      "delayMs": 6000,
+      "when": {
+        "counter": "backBlows",
+        "atLeast": 3,
+        "flag": "blowsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_blows_07",
+      "afterActionId": "back_blow",
+      "delayMs": 7000,
+      "when": {
+        "counter": "backBlows",
+        "atLeast": 3,
+        "flag": "blowsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_blows_08",
+      "afterActionId": "back_blow",
+      "delayMs": 8000,
+      "when": {
+        "counter": "backBlows",
+        "atLeast": 3,
+        "flag": "blowsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_blows_09",
+      "afterActionId": "back_blow",
+      "delayMs": 10000,
+      "when": {
+        "counter": "backBlows",
+        "atLeast": 3,
+        "flag": "blowsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_blows_10",
+      "afterActionId": "back_blow",
+      "delayMs": 12000,
+      "when": {
+        "counter": "backBlows",
+        "atLeast": 3,
+        "flag": "blowsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_blows_11",
+      "afterActionId": "back_blow",
+      "delayMs": 15000,
+      "when": {
+        "counter": "backBlows",
+        "atLeast": 3,
+        "flag": "blowsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_blows_12",
+      "afterActionId": "back_blow",
+      "delayMs": 18000,
+      "when": {
+        "counter": "backBlows",
+        "atLeast": 3,
+        "flag": "blowsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_blows_13",
+      "afterActionId": "back_blow",
+      "delayMs": 22000,
+      "when": {
+        "counter": "backBlows",
+        "atLeast": 3,
+        "flag": "blowsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_blows_14",
+      "afterActionId": "back_blow",
+      "delayMs": 26000,
+      "when": {
+        "counter": "backBlows",
+        "atLeast": 3,
+        "flag": "blowsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_blows_15",
+      "afterActionId": "back_blow",
+      "delayMs": 30000,
+      "when": {
+        "counter": "backBlows",
+        "atLeast": 3,
+        "flag": "blowsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_blows_16",
+      "afterActionId": "back_blow",
+      "delayMs": 36000,
+      "when": {
+        "counter": "backBlows",
+        "atLeast": 3,
+        "flag": "blowsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_blows_17",
+      "afterActionId": "back_blow",
+      "delayMs": 42000,
+      "when": {
+        "counter": "backBlows",
+        "atLeast": 3,
+        "flag": "blowsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_blows_18",
+      "afterActionId": "back_blow",
+      "delayMs": 50000,
+      "when": {
+        "counter": "backBlows",
+        "atLeast": 3,
+        "flag": "blowsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_blows_19",
+      "afterActionId": "back_blow",
+      "delayMs": 58000,
+      "when": {
+        "counter": "backBlows",
+        "atLeast": 3,
+        "flag": "blowsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_blows_20",
+      "afterActionId": "back_blow",
+      "delayMs": 68000,
+      "when": {
+        "counter": "backBlows",
+        "atLeast": 3,
+        "flag": "blowsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_thrusts_01",
+      "afterActionId": "abdominal_thrust",
+      "delayMs": 1000,
+      "when": {
+        "counter": "thrusts",
+        "atLeast": 2,
+        "flag": "thrustsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_thrusts_02",
+      "afterActionId": "abdominal_thrust",
+      "delayMs": 2000,
+      "when": {
+        "counter": "thrusts",
+        "atLeast": 2,
+        "flag": "thrustsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_thrusts_03",
+      "afterActionId": "abdominal_thrust",
+      "delayMs": 3000,
+      "when": {
+        "counter": "thrusts",
+        "atLeast": 2,
+        "flag": "thrustsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_thrusts_04",
+      "afterActionId": "abdominal_thrust",
+      "delayMs": 4000,
+      "when": {
+        "counter": "thrusts",
+        "atLeast": 2,
+        "flag": "thrustsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_thrusts_05",
+      "afterActionId": "abdominal_thrust",
+      "delayMs": 5000,
+      "when": {
+        "counter": "thrusts",
+        "atLeast": 2,
+        "flag": "thrustsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_thrusts_06",
+      "afterActionId": "abdominal_thrust",
+      "delayMs": 6000,
+      "when": {
+        "counter": "thrusts",
+        "atLeast": 2,
+        "flag": "thrustsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_thrusts_07",
+      "afterActionId": "abdominal_thrust",
+      "delayMs": 7000,
+      "when": {
+        "counter": "thrusts",
+        "atLeast": 2,
+        "flag": "thrustsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_thrusts_08",
+      "afterActionId": "abdominal_thrust",
+      "delayMs": 8000,
+      "when": {
+        "counter": "thrusts",
+        "atLeast": 2,
+        "flag": "thrustsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_thrusts_09",
+      "afterActionId": "abdominal_thrust",
+      "delayMs": 10000,
+      "when": {
+        "counter": "thrusts",
+        "atLeast": 2,
+        "flag": "thrustsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_thrusts_10",
+      "afterActionId": "abdominal_thrust",
+      "delayMs": 12000,
+      "when": {
+        "counter": "thrusts",
+        "atLeast": 2,
+        "flag": "thrustsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_thrusts_11",
+      "afterActionId": "abdominal_thrust",
+      "delayMs": 15000,
+      "when": {
+        "counter": "thrusts",
+        "atLeast": 2,
+        "flag": "thrustsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_thrusts_12",
+      "afterActionId": "abdominal_thrust",
+      "delayMs": 18000,
+      "when": {
+        "counter": "thrusts",
+        "atLeast": 2,
+        "flag": "thrustsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_thrusts_13",
+      "afterActionId": "abdominal_thrust",
+      "delayMs": 22000,
+      "when": {
+        "counter": "thrusts",
+        "atLeast": 2,
+        "flag": "thrustsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_thrusts_14",
+      "afterActionId": "abdominal_thrust",
+      "delayMs": 26000,
+      "when": {
+        "counter": "thrusts",
+        "atLeast": 2,
+        "flag": "thrustsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_thrusts_15",
+      "afterActionId": "abdominal_thrust",
+      "delayMs": 30000,
+      "when": {
+        "counter": "thrusts",
+        "atLeast": 2,
+        "flag": "thrustsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_thrusts_16",
+      "afterActionId": "abdominal_thrust",
+      "delayMs": 36000,
+      "when": {
+        "counter": "thrusts",
+        "atLeast": 2,
+        "flag": "thrustsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_thrusts_17",
+      "afterActionId": "abdominal_thrust",
+      "delayMs": 42000,
+      "when": {
+        "counter": "thrusts",
+        "atLeast": 2,
+        "flag": "thrustsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_thrusts_18",
+      "afterActionId": "abdominal_thrust",
+      "delayMs": 50000,
+      "when": {
+        "counter": "thrusts",
+        "atLeast": 2,
+        "flag": "thrustsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_thrusts_19",
+      "afterActionId": "abdominal_thrust",
+      "delayMs": 58000,
+      "when": {
+        "counter": "thrusts",
+        "atLeast": 2,
+        "flag": "thrustsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "clear_thrusts_20",
+      "afterActionId": "abdominal_thrust",
+      "delayMs": 68000,
+      "when": {
+        "counter": "thrusts",
+        "atLeast": 2,
+        "flag": "thrustsWork",
+        "equals": true,
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "recovered"
+        },
+        {
+          "type": "setCasualty",
+          "status": "recovered"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_cleared"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_cleared"
+        }
+      ]
+    },
+    {
+      "id": "collapse",
+      "atMs": 80000,
+      "when": {
+        "phaseId": "severe"
+      },
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "arrest"
+        },
+        {
+          "type": "setCasualty",
+          "status": "collapsed"
+        },
+        {
+          "type": "revealFact",
+          "factId": "fact_unresponsive"
+        },
+        {
+          "type": "say",
+          "characterId": "girl",
+          "lineId": "girl_collapses"
+        },
+        {
+          "type": "say",
+          "characterId": "friend",
+          "lineId": "friend_collapse"
+        }
+      ]
+    },
+    {
+      "id": "crew_arrives",
+      "afterActionId": "ask_friend_call",
+      "delayMs": 90000,
+      "when": {
+        "phaseId": "arrest"
+      },
+      "effects": [
+        {
+          "type": "say",
+          "characterId": "crew",
+          "lineId": "crew_takes_over"
+        },
+        {
+          "type": "endGame",
+          "outcome": "crew_took_over"
+        }
+      ]
+    }
+  ],
+  "lines": [
+    {
+      "id": "friend_opening",
+      "characterId": "friend",
+      "text": "She was laughing while she ate. Now she is coughing a lot!",
+      "emotion": "panicked"
+    },
+    {
+      "id": "friend_opening_b",
+      "characterId": "friend",
+      "text": "Help! She was eating, and now she is coughing and holding her throat!",
+      "emotion": "panicked"
+    },
+    {
+      "id": "girl_opening",
+      "characterId": "girl",
+      "text": "(She coughs hard. Her face is red and her eyes are watering.)",
+      "emotion": "panicked"
+    },
+    {
+      "id": "girl_nods",
+      "characterId": "girl",
+      "text": "(She nods. She holds her throat with both hands.)",
+      "emotion": "panicked"
+    },
+    {
+      "id": "girl_coughs_harder",
+      "characterId": "girl",
+      "text": "(She keeps coughing hard. Air is still getting in.)",
+      "emotion": "worried",
+      "ref": {
+        "sourceId": "ifrc2025",
+        "page": "240",
+        "review": "pending"
+      }
+    },
+    {
+      "id": "girl_early_blow",
+      "characterId": "girl",
+      "text": "(She is still coughing hard. Hitting her back does not help while she can cough.)",
+      "emotion": "worried",
+      "ref": {
+        "sourceId": "ifrc2025",
+        "page": "240",
+        "review": "pending"
+      }
+    },
+    {
+      "id": "student_water",
+      "characterId": "student",
+      "text": "Give her some water!",
+      "emotion": "worried",
+      "wrongAdvice": true,
+      "correctionHarmId": "harm_water",
+      "ref": {
+        "sourceId": "ifrc2025",
+        "page": "240",
+        "review": "pending"
+      }
+    },
+    {
+      "id": "girl_water",
+      "characterId": "girl",
+      "text": "(She cannot swallow. The water makes her splutter and choke more.)",
+      "emotion": "panicked",
+      "ref": {
+        "sourceId": "ifrc2025",
+        "page": "240",
+        "review": "pending"
+      }
+    },
+    {
+      "id": "student_fingers",
+      "characterId": "student",
+      "text": "Put your fingers in her mouth and pull it out!",
+      "emotion": "panicked",
+      "wrongAdvice": true,
+      "correctionHarmId": "harm_fingers",
+      "ref": {
+        "sourceId": "ifrc2025",
+        "page": "240",
+        "review": "pending"
+      }
+    },
+    {
+      "id": "girl_fingers",
+      "characterId": "girl",
+      "text": "(She gags and pulls away. Fingers can push the food further down.)",
+      "emotion": "panicked",
+      "ref": {
+        "sourceId": "ifrc2025",
+        "page": "240",
+        "review": "pending"
+      }
+    },
+    {
+      "id": "girl_cannot_breathe",
+      "characterId": "girl",
+      "text": "(She cannot cough, speak or breathe. She points at her throat.)",
+      "emotion": "panicked",
+      "ref": {
+        "sourceId": "ifrc2025",
+        "page": "240",
+        "review": "pending"
+      }
+    },
+    {
+      "id": "girl_leaned",
+      "characterId": "girl",
+      "text": "(You hold her chest with one hand and lean her well forward.)",
+      "emotion": "panicked",
+      "ref": {
+        "sourceId": "ifrc2025",
+        "page": "240",
+        "review": "pending"
+      }
+    },
+    {
+      "id": "girl_back_blow",
+      "characterId": "girl",
+      "text": "(A firm blow between her shoulder blades with the heel of your hand.)",
+      "emotion": "panicked",
+      "ref": {
+        "sourceId": "ifrc2025",
+        "page": "240",
+        "review": "pending"
+      }
+    },
+    {
+      "id": "girl_thrust",
+      "characterId": "girl",
+      "text": "(From behind, fist above her belly button, you pull sharply in and up.)",
+      "emotion": "panicked",
+      "ref": {
+        "sourceId": "ifrc2025",
+        "page": "240",
+        "review": "pending"
+      }
+    },
+    {
+      "id": "friend_calling",
+      "characterId": "friend",
+      "text": "Okay! I am calling 907 now. Keep helping her!",
+      "emotion": "worried",
+      "ref": {
+        "sourceId": "ifrc2025",
+        "page": "240",
+        "review": "pending"
+      }
+    },
+    {
+      "id": "friend_907_coming",
+      "characterId": "friend",
+      "text": "907 says an ambulance is on the way. Keep helping her!",
+      "emotion": "worried",
+      "ref": {
+        "sourceId": "ifrc2025",
+        "page": "240",
+        "review": "pending"
+      }
+    },
+    {
+      "id": "friend_still_stuck",
+      "characterId": "friend",
+      "text": "It is still stuck! She still cannot breathe!",
+      "emotion": "panicked"
+    },
+    {
+      "id": "friend_dont_leave",
+      "characterId": "friend",
+      "text": "Do not leave her! She cannot breathe. Stay and help her!",
+      "emotion": "panicked",
+      "ref": {
+        "sourceId": "ifrc2025",
+        "page": "240",
+        "review": "pending"
+      }
+    },
+    {
+      "id": "girl_cleared",
+      "characterId": "girl",
+      "text": "(The food flies out. She coughs and takes a big breath.) I... I can breathe.",
+      "emotion": "worried"
+    },
+    {
+      "id": "friend_cleared",
+      "characterId": "friend",
+      "text": "It came out! You did it!",
+      "emotion": "calm"
+    },
+    {
+      "id": "girl_thanks",
+      "characterId": "girl",
+      "text": "Thank you for staying with me. My throat hurts a little.",
+      "emotion": "calm"
+    },
+    {
+      "id": "teacher_check",
+      "characterId": "teacher",
+      "text": "Well done. I will take her to the health centre to be checked. Back blows and thrusts can hurt, and a bit of food can stay behind.",
+      "emotion": "calm",
+      "ref": {
+        "sourceId": "ifrc2025",
+        "page": "240",
+        "review": "pending"
+      }
+    },
+    {
+      "id": "girl_collapses",
+      "characterId": "girl",
+      "text": "(She goes limp, and you lower her to the floor. She does not respond and is not breathing normally.)",
+      "emotion": "neutral",
+      "ref": {
+        "sourceId": "ifrc2025",
+        "page": "240",
+        "review": "pending"
+      }
+    },
+    {
+      "id": "friend_collapse",
+      "characterId": "friend",
+      "text": "She is not answering! What do we do?",
+      "emotion": "panicked"
+    },
+    {
+      "id": "girl_cpr",
+      "characterId": "girl",
+      "text": "(You push hard and fast on the centre of her chest.)",
+      "emotion": "neutral",
+      "ref": {
+        "sourceId": "ifrc2025",
+        "page": "to confirm",
+        "review": "pending"
+      }
+    },
+    {
+      "id": "friend_not_waking",
+      "characterId": "friend",
+      "text": "She is not waking up! She needs help now!",
+      "emotion": "panicked",
+      "ref": {
+        "sourceId": "ifrc2025",
+        "page": "to confirm",
+        "review": "pending"
+      }
+    },
+    {
+      "id": "crew_takes_over",
+      "characterId": "crew",
+      "text": "We are the ambulance crew. We will take over now. You did the right thing to push on her chest.",
+      "emotion": "calm",
+      "ref": {
+        "sourceId": "ifrc2025",
+        "page": "to confirm",
+        "review": "pending"
+      }
+    }
+  ],
+  "openingLineIds": [
+    "friend_opening",
+    "girl_opening"
+  ],
+  "rubric": {
+    "items": [
+      {
+        "id": "asked_choking",
+        "description": "Asked: Are you choking?",
+        "check": {
+          "kind": "did",
+          "actionId": "ask_choking"
+        },
+        "points": 5,
+        "critical": false,
+        "teachingPoint": "Ask \"Are you choking?\" If she nods but cannot speak, act at once.",
+        "ref": {
+          "sourceId": "ifrc2025",
+          "page": "240",
+          "review": "pending"
+        }
+      },
+      {
+        "id": "encouraged_cough",
+        "description": "Told her to keep coughing while she could",
+        "check": {
+          "kind": "did",
+          "actionId": "encourage_cough"
+        },
+        "points": 5,
+        "critical": false,
+        "teachingPoint": "If she can cough, tell her to keep coughing. Coughing is the best way to clear it. Stay with her.",
+        "ref": {
+          "sourceId": "ifrc2025",
+          "page": "240",
+          "review": "pending"
+        }
+      },
+      {
+        "id": "leaned_forward",
+        "description": "Leaned her forward before the back blows",
+        "check": {
+          "kind": "didBefore",
+          "actionId": "lean_forward",
+          "beforeActionId": "back_blow"
+        },
+        "points": 5,
+        "critical": false,
+        "teachingPoint": "Lean her well forward first, so the food comes out of her mouth and does not go further down.",
+        "ref": {
+          "sourceId": "ifrc2025",
+          "page": "240",
+          "review": "pending"
+        }
+      },
+      {
+        "id": "blows_quickly",
+        "description": "Gave back blows quickly when she could not cough, speak or breathe",
+        "check": {
+          "kind": "didWithin",
+          "actionId": "back_blow",
+          "withinMs": 10000,
+          "fromEventId": "cannot_breathe"
+        },
+        "points": 20,
+        "critical": true,
+        "teachingPoint": "If she cannot cough, speak or breathe, give up to 5 firm back blows between the shoulder blades with the heel of your hand, straight away.",
+        "ref": {
+          "sourceId": "ifrc2025",
+          "page": "240",
+          "review": "pending"
+        }
+      },
+      {
+        "id": "blows_before_thrusts",
+        "description": "Gave 5 back blows before abdominal thrusts",
+        "check": {
+          "kind": "countAtLeast",
+          "counter": "backBlows",
+          "min": 5
+        },
+        "appliesWhen": {
+          "flag": "blowsWork",
+          "equals": false
+        },
+        "points": 10,
+        "critical": true,
+        "teachingPoint": "Back blows first, up to 5. If they do not work, give up to 5 abdominal thrusts. Keep repeating 5 and 5 until the food comes out.",
+        "ref": {
+          "sourceId": "ifrc2025",
+          "page": "240",
+          "review": "pending"
+        }
+      },
+      {
+        "id": "friend_called",
+        "description": "Got a friend to call 907",
+        "check": {
+          "kind": "did",
+          "actionId": "ask_friend_call"
+        },
+        "points": 15,
+        "critical": true,
+        "teachingPoint": "Send a friend to call 907 while you keep helping her. If the food does not come out, or she stops responding, the ambulance is already on the way.",
+        "ref": {
+          "sourceId": "ifrc2025",
+          "page": "240",
+          "review": "pending"
+        }
+      },
+      {
+        "id": "cpr_started",
+        "description": "Started chest compressions within a minute of her collapse",
+        "check": {
+          "kind": "didWithin",
+          "actionId": "start_compressions",
+          "withinMs": 60000,
+          "fromEventId": "collapse"
+        },
+        "points": 10,
+        "critical": true,
+        "teachingPoint": "If she stops responding and is not breathing normally, start chest compressions at once and keep going until help takes over.",
+        "ref": {
+          "sourceId": "ifrc2025",
+          "page": "to confirm",
+          "review": "pending"
+        },
+        "appliesWhen": {
+          "phaseId": "arrest"
+        }
+      },
+      {
+        "id": "cpr_rate",
+        "description": "Pushed at 100 to 120 a minute for most sets",
+        "check": {
+          "kind": "rateInRange",
+          "actionId": "start_compressions",
+          "minBpm": 100,
+          "maxBpm": 120,
+          "minShare": 0.7
+        },
+        "points": 5,
+        "critical": false,
+        "teachingPoint": "Push 100 to 120 times a minute. A hands-on class teaches the depth: 5 to 6 cm.",
+        "ref": {
+          "sourceId": "ifrc2025",
+          "page": "to confirm",
+          "review": "pending"
+        },
+        "appliesWhen": {
+          "phaseId": "arrest"
+        }
+      },
+      {
+        "id": "comforted",
+        "description": "Stayed with her after the food came out",
+        "check": {
+          "kind": "did",
+          "actionId": "comfort"
+        },
+        "points": 5,
+        "critical": false,
+        "teachingPoint": "Stay with her until she is calm and breathing normally.",
+        "ref": {
+          "sourceId": "ifrc2025",
+          "page": "240",
+          "review": "pending"
+        },
+        "appliesWhen": {
+          "phaseId": "recovered"
+        }
+      },
+      {
+        "id": "health_check",
+        "description": "Made sure a health worker checks her",
+        "check": {
+          "kind": "did",
+          "actionId": "get_checked"
+        },
+        "points": 10,
+        "critical": false,
+        "teachingPoint": "After choking, she should be checked by a health worker. Back blows and thrusts can hurt, and a bit of food can stay behind.",
+        "ref": {
+          "sourceId": "ifrc2025",
+          "page": "240",
+          "review": "pending"
+        },
+        "appliesWhen": {
+          "phaseId": "recovered"
+        }
+      }
+    ],
+    "harms": [
+      {
+        "id": "harm_early_blow",
+        "description": "Hit her back while she could still cough",
+        "actionId": "back_blow_early",
+        "deduction": 10,
+        "teachingPoint": "While she can cough, coughing works best. Start back blows only when she cannot cough, speak or breathe.",
+        "ref": {
+          "sourceId": "ifrc2025",
+          "page": "240",
+          "review": "pending"
+        }
+      },
+      {
+        "id": "harm_water",
+        "description": "Gave her water",
+        "actionId": "give_water",
+        "deduction": 20,
+        "teachingPoint": "Never give a choking person a drink. She cannot swallow, and it can make the choking worse.",
+        "ref": {
+          "sourceId": "ifrc2025",
+          "page": "240",
+          "review": "pending"
+        }
+      },
+      {
+        "id": "harm_fingers",
+        "description": "Put fingers in her mouth",
+        "actionId": "fingers_in_mouth",
+        "deduction": 20,
+        "teachingPoint": "Do not put your fingers in her mouth to search for the food. It can push the food further down.",
+        "ref": {
+          "sourceId": "ifrc2025",
+          "page": "240",
+          "review": "pending"
+        }
+      },
+      {
+        "id": "harm_left",
+        "description": "Left her alone to find a teacher",
+        "actionId": "leave_for_teacher",
+        "deduction": 15,
+        "teachingPoint": "Do not leave someone who is choking. Stay and help her, and send someone else for help.",
+        "ref": {
+          "sourceId": "ifrc2025",
+          "page": "240",
+          "review": "pending"
+        }
+      },
+      {
+        "id": "harm_waited",
+        "description": "Waited for her to wake up",
+        "actionId": "wait_wake",
+        "deduction": 15,
+        "teachingPoint": "If she stops responding, make sure 907 is called and start chest compressions straight away.",
+        "ref": {
+          "sourceId": "ifrc2025",
+          "page": "240",
+          "review": "pending"
+        }
+      }
+    ],
+    "time": {
+      "maxPoints": 10,
+      "targetMs": 45000,
+      "zeroAtMs": 150000
+    }
+  },
+  "maxDurationMs": 240000,
+  "variants": [
+    {
+      "id": "practice-a",
+      "label": "Practice A",
+      "finalOnly": false,
+      "flags": {
+        "blowsWork": true,
+        "thrustsWork": false
+      }
+    },
+    {
+      "id": "practice-b",
+      "label": "Practice B",
+      "finalOnly": false,
+      "flags": {
+        "blowsWork": false,
+        "thrustsWork": true
+      }
+    },
+    {
+      "id": "final-a",
+      "label": "Final A",
+      "finalOnly": true,
+      "flags": {
+        "blowsWork": false,
+        "thrustsWork": true
+      },
+      "timelineAtMs": {
+        "collapse": 40000
+      },
+      "lineSwaps": {
+        "friend_opening": "friend_opening_b"
+      }
+    }
+  ],
+  "disclaimer": "A practice game. It does not replace hands-on first aid training. In an emergency in Addis Ababa, call 907."
+}

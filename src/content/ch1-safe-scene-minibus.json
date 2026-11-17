@@ -1,0 +1,1084 @@
+{
+  "id": "ch1-safe-scene-minibus",
+  "chapter": 1,
+  "title": "The minibus stop",
+  "shortTitle": "Safe scene",
+  "version": "0.1.0",
+  "scene": "minibus-stop",
+  "intro": "After school you wait at the minibus stop next to a petrol station. Cars and minibuses pass close by. An older man gets off a minibus, trips and falls on the pavement. Keep yourself safe and help him.",
+  "sources": [
+    {
+      "id": "ifrc2025",
+      "title": "IFRC International First Aid, Resuscitation and Education Guidelines 2025",
+      "url": "https://www.ifrc.org/document/ifrc-international-first-aid-resuscitation-and-education-guidelines-2025"
+    }
+  ],
+  "characters": [
+    {
+      "id": "man",
+      "name": "Older man",
+      "role": "casualty",
+      "description": "An older man who fell on the pavement at the stop. He is awake, confused about what happened, and has hurt his leg."
+    },
+    {
+      "id": "passerby",
+      "name": "Passer-by",
+      "role": "bystander",
+      "description": "A worried passer-by who wants to help. He can warn the traffic, but he also gives wrong advice."
+    },
+    {
+      "id": "calltaker",
+      "name": "907 call-taker",
+      "role": "calltaker",
+      "description": "The call-taker at 907, the free ambulance number for Addis Ababa. Asks where you are and what happened."
+    },
+    {
+      "id": "crew",
+      "name": "Ambulance crew",
+      "role": "adult",
+      "description": "The ambulance team who take over when they arrive."
+    }
+  ],
+  "facts": [
+    {
+      "id": "fact_traffic",
+      "text": "Minibuses and cars pass close to the kerb. Stepping into the road is not safe."
+    },
+    {
+      "id": "fact_pavement",
+      "text": "He is lying on the pavement, not in the road. Where he is, he is not in danger."
+    },
+    {
+      "id": "fact_one_hurt",
+      "text": "No one else is hurt."
+    },
+    {
+      "id": "fact_landmark",
+      "text": "The minibus stop is next to a petrol station."
+    },
+    {
+      "id": "fact_awake",
+      "text": "He is awake and talking, so he is breathing. He is confused about what happened, and his leg hurts."
+    }
+  ],
+  "phases": [
+    {
+      "id": "scene",
+      "title": "Is it safe?"
+    },
+    {
+      "id": "call",
+      "title": "On the phone to 907"
+    },
+    {
+      "id": "care",
+      "title": "Wait with him"
+    },
+    {
+      "id": "handover",
+      "title": "The ambulance arrives"
+    }
+  ],
+  "startPhaseId": "scene",
+  "startCasualty": "collapsed",
+  "initialFlags": {
+    "talked": false,
+    "locationGiven": false,
+    "minibusIdea": false,
+    "crewHere": false
+  },
+  "actions": [
+    {
+      "id": "check_danger",
+      "label": "Look for danger",
+      "kind": "action",
+      "phases": [
+        "scene"
+      ],
+      "effects": [
+        {
+          "type": "revealFact",
+          "factId": "fact_traffic"
+        },
+        {
+          "type": "revealFact",
+          "factId": "fact_pavement"
+        },
+        {
+          "type": "revealFact",
+          "factId": "fact_one_hurt"
+        },
+        {
+          "type": "revealFact",
+          "factId": "fact_landmark"
+        }
+      ],
+      "hint": "Before you go to him, stop and look. Watch for cars and minibuses that could hit you."
+    },
+    {
+      "id": "warn_traffic",
+      "label": "Ask someone to warn cars",
+      "kind": "action",
+      "targetCharacterId": "passerby",
+      "phases": [
+        "scene",
+        "care"
+      ],
+      "effects": [
+        {
+          "type": "say",
+          "characterId": "passerby",
+          "lineId": "passerby_warns"
+        }
+      ],
+      "hint": "Ask a person nearby to stand on the pavement and wave so drivers slow down."
+    },
+    {
+      "id": "run_into_road",
+      "label": "Run into the road to stop cars",
+      "kind": "action",
+      "phases": [
+        "scene"
+      ],
+      "effects": [
+        {
+          "type": "say",
+          "characterId": "passerby",
+          "lineId": "passerby_road"
+        }
+      ],
+      "hint": "Think: who gets hurt if a minibus cannot stop in time?"
+    },
+    {
+      "id": "ask_response",
+      "label": "Ask: Can you hear me?",
+      "kind": "question",
+      "targetCharacterId": "man",
+      "phases": [
+        "scene",
+        "call",
+        "care"
+      ],
+      "effects": [
+        {
+          "type": "setFlag",
+          "flag": "talked",
+          "value": true
+        },
+        {
+          "type": "revealFact",
+          "factId": "fact_awake"
+        },
+        {
+          "type": "say",
+          "characterId": "man",
+          "lineId": "man_answers"
+        }
+      ],
+      "hint": "Kneel beside him on the pavement and speak clearly. Is he awake? Can he talk to you?"
+    },
+    {
+      "id": "call_907",
+      "label": "Call 907",
+      "kind": "call",
+      "targetCharacterId": "calltaker",
+      "phases": [
+        "scene"
+      ],
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "call"
+        },
+        {
+          "type": "say",
+          "characterId": "calltaker",
+          "lineId": "calltaker_answer"
+        }
+      ],
+      "hint": "907 is the free ambulance number in Addis Ababa. Call early, from a safe place."
+    },
+    {
+      "id": "say_where",
+      "label": "Say where we are",
+      "kind": "question",
+      "targetCharacterId": "calltaker",
+      "phases": [
+        "call"
+      ],
+      "effects": [
+        {
+          "type": "addCounter",
+          "counter": "callInfo",
+          "delta": 1
+        },
+        {
+          "type": "setFlag",
+          "flag": "locationGiven",
+          "value": true
+        },
+        {
+          "type": "say",
+          "characterId": "calltaker",
+          "lineId": "calltaker_where"
+        }
+      ],
+      "hint": "Give a landmark people know. Here: the minibus stop next to the petrol station."
+    },
+    {
+      "id": "say_what",
+      "label": "Say what happened",
+      "kind": "question",
+      "targetCharacterId": "calltaker",
+      "phases": [
+        "call"
+      ],
+      "effects": [
+        {
+          "type": "addCounter",
+          "counter": "callInfo",
+          "delta": 1
+        },
+        {
+          "type": "say",
+          "characterId": "calltaker",
+          "lineId": "calltaker_what"
+        }
+      ],
+      "hint": "Keep it short: an older man fell and hurt his leg."
+    },
+    {
+      "id": "say_how_many",
+      "label": "Say how many are hurt",
+      "kind": "question",
+      "targetCharacterId": "calltaker",
+      "phases": [
+        "call"
+      ],
+      "effects": [
+        {
+          "type": "addCounter",
+          "counter": "callInfo",
+          "delta": 1
+        },
+        {
+          "type": "say",
+          "characterId": "calltaker",
+          "lineId": "calltaker_number"
+        }
+      ],
+      "hint": "Say how many people are hurt. Here: one."
+    },
+    {
+      "id": "say_awake",
+      "label": "Say if awake and breathing",
+      "kind": "question",
+      "targetCharacterId": "calltaker",
+      "phases": [
+        "call"
+      ],
+      "requires": {
+        "flag": "talked",
+        "equals": true
+      },
+      "effects": [
+        {
+          "type": "addCounter",
+          "counter": "callInfo",
+          "delta": 1
+        },
+        {
+          "type": "say",
+          "characterId": "calltaker",
+          "lineId": "calltaker_awake"
+        }
+      ],
+      "hint": "Tell them what you found: he is awake and talking, so he is breathing."
+    },
+    {
+      "id": "hang_up",
+      "label": "Hang up quickly",
+      "kind": "action",
+      "phases": [
+        "call"
+      ],
+      "effects": [
+        {
+          "type": "gotoPhase",
+          "phaseId": "care"
+        }
+      ],
+      "hint": "Has the call-taker finished with you yet?"
+    },
+    {
+      "id": "ask_what_now",
+      "label": "Ask: What should I do now?",
+      "kind": "question",
+      "targetCharacterId": "calltaker",
+      "phases": [
+        "call"
+      ],
+      "requires": {
+        "counter": "callInfo",
+        "atLeast": 4
+      },
+      "effects": [
+        {
+          "type": "say",
+          "characterId": "calltaker",
+          "lineId": "calltaker_advice"
+        },
+        {
+          "type": "gotoPhase",
+          "phaseId": "care"
+        }
+      ],
+      "hint": "Stay on the line until the call-taker has finished. Listen to what they tell you."
+    },
+    {
+      "id": "keep_still",
+      "label": "Tell him to lie still",
+      "kind": "action",
+      "targetCharacterId": "man",
+      "phases": [
+        "care"
+      ],
+      "effects": [
+        {
+          "type": "say",
+          "characterId": "man",
+          "lineId": "man_still"
+        }
+      ],
+      "hint": "Do not move him unless he is in danger. Moving a hurt leg can make it worse."
+    },
+    {
+      "id": "reassure",
+      "label": "Talk to him calmly",
+      "kind": "action",
+      "targetCharacterId": "man",
+      "phases": [
+        "care"
+      ],
+      "effects": [
+        {
+          "type": "say",
+          "characterId": "man",
+          "lineId": "man_calm"
+        }
+      ],
+      "hint": "Tell him help is coming and that you will stay with him."
+    },
+    {
+      "id": "keep_warm",
+      "label": "Cover him with a jacket",
+      "kind": "action",
+      "targetCharacterId": "man",
+      "phases": [
+        "care"
+      ],
+      "effects": [
+        {
+          "type": "setCasualty",
+          "status": "lying_awake"
+        },
+        {
+          "type": "say",
+          "characterId": "man",
+          "lineId": "man_warm"
+        }
+      ],
+      "hint": "A hurt person gets cold easily, even on a warm day. Put a jacket or shawl over him."
+    },
+    {
+      "id": "help_stand",
+      "label": "Help him stand up",
+      "kind": "action",
+      "targetCharacterId": "man",
+      "phases": [
+        "scene",
+        "care"
+      ],
+      "effects": [
+        {
+          "type": "say",
+          "characterId": "man",
+          "lineId": "man_stand_pain"
+        }
+      ],
+      "hint": "Is he in danger where he is? If not, should he be moved?"
+    },
+    {
+      "id": "lift_minibus",
+      "label": "Lift him into a minibus",
+      "kind": "action",
+      "targetCharacterId": "man",
+      "phases": [
+        "scene",
+        "care"
+      ],
+      "requires": {
+        "flag": "minibusIdea",
+        "equals": true
+      },
+      "effects": [
+        {
+          "type": "say",
+          "characterId": "man",
+          "lineId": "man_lift_pain"
+        },
+        {
+          "type": "say",
+          "characterId": "passerby",
+          "lineId": "passerby_put_down"
+        }
+      ],
+      "hint": "Who can keep his leg still and care for him on the way: a minibus or the ambulance crew?"
+    },
+    {
+      "id": "leave_him",
+      "label": "Leave him and run for help",
+      "kind": "action",
+      "phases": [
+        "scene",
+        "care"
+      ],
+      "effects": [
+        {
+          "type": "say",
+          "characterId": "passerby",
+          "lineId": "passerby_stay"
+        }
+      ],
+      "hint": "Your phone can bring help. Should he be left alone?"
+    },
+    {
+      "id": "tell_crew",
+      "label": "Tell the crew what happened",
+      "kind": "action",
+      "targetCharacterId": "crew",
+      "phases": [
+        "handover"
+      ],
+      "effects": [
+        {
+          "type": "say",
+          "characterId": "crew",
+          "lineId": "crew_thanks"
+        },
+        {
+          "type": "setCasualty",
+          "status": "handover"
+        },
+        {
+          "type": "endGame",
+          "outcome": "handed_over"
+        }
+      ],
+      "hint": "Tell them what you saw and did: he fell, hurt his leg, is awake and breathing, and you kept him still and warm."
+    }
+  ],
+  "timeline": [
+    {
+      "id": "minibus_idea",
+      "atMs": 30000,
+      "effects": [
+        {
+          "type": "setFlag",
+          "flag": "minibusIdea",
+          "value": true
+        },
+        {
+          "type": "say",
+          "characterId": "passerby",
+          "lineId": "passerby_minibus"
+        }
+      ]
+    },
+    {
+      "id": "crew_arrives",
+      "afterActionId": "call_907",
+      "delayMs": 75000,
+      "when": {
+        "flag": "locationGiven",
+        "equals": true
+      },
+      "effects": [
+        {
+          "type": "setFlag",
+          "flag": "crewHere",
+          "value": true
+        },
+        {
+          "type": "gotoPhase",
+          "phaseId": "handover"
+        },
+        {
+          "type": "setCasualty",
+          "status": "handover"
+        },
+        {
+          "type": "say",
+          "characterId": "crew",
+          "lineId": "crew_arrive"
+        }
+      ]
+    },
+    {
+      "id": "crew_arrives_late",
+      "afterActionId": "call_907",
+      "delayMs": 150000,
+      "when": {
+        "flag": "crewHere",
+        "equals": false
+      },
+      "effects": [
+        {
+          "type": "setFlag",
+          "flag": "crewHere",
+          "value": true
+        },
+        {
+          "type": "gotoPhase",
+          "phaseId": "handover"
+        },
+        {
+          "type": "setCasualty",
+          "status": "handover"
+        },
+        {
+          "type": "say",
+          "characterId": "crew",
+          "lineId": "crew_late"
+        }
+      ]
+    }
+  ],
+  "lines": [
+    {
+      "id": "passerby_opening",
+      "characterId": "passerby",
+      "text": "Oh no! That old man just fell down by the minibus stop!",
+      "emotion": "panicked"
+    },
+    {
+      "id": "passerby_opening_b",
+      "characterId": "passerby",
+      "text": "Did you see that? An old man fell as he got off the minibus!",
+      "emotion": "worried"
+    },
+    {
+      "id": "man_opening",
+      "characterId": "man",
+      "text": "(He lies on the pavement, holding his leg.) Oh... my leg...",
+      "emotion": "pain"
+    },
+    {
+      "id": "passerby_warns",
+      "characterId": "passerby",
+      "text": "Okay. I will stand on the pavement and wave so the cars slow down.",
+      "emotion": "calm",
+      "ref": {
+        "sourceId": "ifrc2025",
+        "page": "to confirm",
+        "review": "pending"
+      }
+    },
+    {
+      "id": "passerby_road",
+      "characterId": "passerby",
+      "text": "Watch out! That minibus nearly hit you! Get back on the pavement!",
+      "emotion": "panicked",
+      "ref": {
+        "sourceId": "ifrc2025",
+        "page": "to confirm",
+        "review": "pending"
+      }
+    },
+    {
+      "id": "man_answers",
+      "characterId": "man",
+      "text": "Yes... I can hear you. What happened? I do not know... My leg hurts a lot.",
+      "emotion": "worried"
+    },
+    {
+      "id": "calltaker_answer",
+      "characterId": "calltaker",
+      "text": "907 ambulance. Stay on the line with me. Where are you?",
+      "emotion": "calm",
+      "ref": {
+        "sourceId": "ifrc2025",
+        "page": "to confirm",
+        "review": "pending"
+      }
+    },
+    {
+      "id": "calltaker_where",
+      "characterId": "calltaker",
+      "text": "The minibus stop next to the petrol station. Got it.",
+      "emotion": "calm",
+      "ref": {
+        "sourceId": "ifrc2025",
+        "page": "to confirm",
+        "review": "pending"
+      }
+    },
+    {
+      "id": "calltaker_what",
+      "characterId": "calltaker",
+      "text": "An older man fell and hurt his leg. Okay.",
+      "emotion": "calm",
+      "ref": {
+        "sourceId": "ifrc2025",
+        "page": "to confirm",
+        "review": "pending"
+      }
+    },
+    {
+      "id": "calltaker_number",
+      "characterId": "calltaker",
+      "text": "One person is hurt. Okay.",
+      "emotion": "calm",
+      "ref": {
+        "sourceId": "ifrc2025",
+        "page": "to confirm",
+        "review": "pending"
+      }
+    },
+    {
+      "id": "calltaker_awake",
+      "characterId": "calltaker",
+      "text": "He is awake and breathing. Good. Watch him and tell me if that changes.",
+      "emotion": "calm",
+      "ref": {
+        "sourceId": "ifrc2025",
+        "page": "to confirm",
+        "review": "pending"
+      }
+    },
+    {
+      "id": "calltaker_advice",
+      "characterId": "calltaker",
+      "text": "An ambulance is coming. Stay with him and do not move him. Keep him still, calm and warm. If he gets worse, call 907 again.",
+      "emotion": "calm",
+      "ref": {
+        "sourceId": "ifrc2025",
+        "page": "to confirm",
+        "review": "pending"
+      }
+    },
+    {
+      "id": "passerby_minibus",
+      "characterId": "passerby",
+      "text": "Let's lift him into a minibus and take him to hospital ourselves.",
+      "emotion": "worried",
+      "wrongAdvice": true,
+      "correctionHarmId": "harm_minibus",
+      "ref": {
+        "sourceId": "ifrc2025",
+        "page": "to confirm",
+        "review": "pending"
+      }
+    },
+    {
+      "id": "man_stand_pain",
+      "characterId": "man",
+      "text": "Aaah! My leg! I cannot stand up!",
+      "emotion": "pain"
+    },
+    {
+      "id": "man_lift_pain",
+      "characterId": "man",
+      "text": "Aaah! Stop! Put me down, it hurts!",
+      "emotion": "pain",
+      "ref": {
+        "sourceId": "ifrc2025",
+        "page": "to confirm",
+        "review": "pending"
+      }
+    },
+    {
+      "id": "passerby_put_down",
+      "characterId": "passerby",
+      "text": "Okay, okay. Put him down gently. We should wait for the ambulance.",
+      "emotion": "worried",
+      "ref": {
+        "sourceId": "ifrc2025",
+        "page": "to confirm",
+        "review": "pending"
+      }
+    },
+    {
+      "id": "passerby_stay",
+      "characterId": "passerby",
+      "text": "Hey, do not leave him alone! Stay with him and use your phone.",
+      "emotion": "worried",
+      "ref": {
+        "sourceId": "ifrc2025",
+        "page": "to confirm",
+        "review": "pending"
+      }
+    },
+    {
+      "id": "man_still",
+      "characterId": "man",
+      "text": "Okay... I will lie still.",
+      "emotion": "pain",
+      "ref": {
+        "sourceId": "ifrc2025",
+        "page": "to confirm",
+        "review": "pending"
+      }
+    },
+    {
+      "id": "man_calm",
+      "characterId": "man",
+      "text": "Thank you for staying with me, my child. I feel a little better.",
+      "emotion": "calm"
+    },
+    {
+      "id": "man_warm",
+      "characterId": "man",
+      "text": "That is better. I was getting cold.",
+      "emotion": "calm"
+    },
+    {
+      "id": "crew_arrive",
+      "characterId": "crew",
+      "text": "We are the ambulance crew. Tell us what happened.",
+      "emotion": "calm",
+      "ref": {
+        "sourceId": "ifrc2025",
+        "page": "to confirm",
+        "review": "pending"
+      }
+    },
+    {
+      "id": "crew_late",
+      "characterId": "crew",
+      "text": "We are the ambulance crew. It was hard to find you. Next time, tell 907 a landmark. What happened?",
+      "emotion": "worried",
+      "ref": {
+        "sourceId": "ifrc2025",
+        "page": "to confirm",
+        "review": "pending"
+      }
+    },
+    {
+      "id": "crew_thanks",
+      "characterId": "crew",
+      "text": "Thank you. You kept him safe, still and warm. We will take care of him now.",
+      "emotion": "calm",
+      "ref": {
+        "sourceId": "ifrc2025",
+        "page": "to confirm",
+        "review": "pending"
+      }
+    }
+  ],
+  "openingLineIds": [
+    "passerby_opening",
+    "man_opening"
+  ],
+  "rubric": {
+    "items": [
+      {
+        "id": "danger_first",
+        "description": "Looked for danger before going to him",
+        "check": {
+          "kind": "didBefore",
+          "actionId": "check_danger",
+          "beforeActionId": "ask_response"
+        },
+        "points": 10,
+        "critical": true,
+        "teachingPoint": "Stop and look before you help. Check for cars and minibuses, so you do not get hurt too.",
+        "ref": {
+          "sourceId": "ifrc2025",
+          "page": "to confirm",
+          "review": "pending"
+        }
+      },
+      {
+        "id": "traffic_warned",
+        "description": "Asked someone to warn the traffic",
+        "check": {
+          "kind": "did",
+          "actionId": "warn_traffic"
+        },
+        "points": 10,
+        "critical": false,
+        "teachingPoint": "Ask a bystander to stand on the pavement and wave so drivers slow down. Never stand in the road yourself.",
+        "ref": {
+          "sourceId": "ifrc2025",
+          "page": "to confirm",
+          "review": "pending"
+        }
+      },
+      {
+        "id": "response_checked",
+        "description": "Checked his response by talking to him",
+        "check": {
+          "kind": "did",
+          "actionId": "ask_response"
+        },
+        "points": 10,
+        "critical": true,
+        "teachingPoint": "Talk to him: \"Can you hear me?\" If he answers, he is awake and breathing. Tell 907 what you found.",
+        "ref": {
+          "sourceId": "ifrc2025",
+          "page": "to confirm",
+          "review": "pending"
+        }
+      },
+      {
+        "id": "called_quickly",
+        "description": "Called 907 quickly",
+        "check": {
+          "kind": "didWithin",
+          "actionId": "call_907",
+          "withinMs": 45000
+        },
+        "points": 10,
+        "critical": true,
+        "teachingPoint": "Call 907 early. The call is free, and the sooner you call, the sooner the ambulance comes.",
+        "ref": {
+          "sourceId": "ifrc2025",
+          "page": "to confirm",
+          "review": "pending"
+        }
+      },
+      {
+        "id": "said_where",
+        "description": "Told 907 where you are, with a landmark",
+        "check": {
+          "kind": "did",
+          "actionId": "say_where"
+        },
+        "points": 10,
+        "critical": true,
+        "teachingPoint": "Say where you are and name a landmark people know, like a petrol station, church or school. Without it, the ambulance cannot find you.",
+        "ref": {
+          "sourceId": "ifrc2025",
+          "page": "to confirm",
+          "review": "pending"
+        }
+      },
+      {
+        "id": "said_what",
+        "description": "Told 907 what happened",
+        "check": {
+          "kind": "did",
+          "actionId": "say_what"
+        },
+        "points": 5,
+        "critical": false,
+        "teachingPoint": "Say what happened in a few words: an older man fell and hurt his leg.",
+        "ref": {
+          "sourceId": "ifrc2025",
+          "page": "to confirm",
+          "review": "pending"
+        }
+      },
+      {
+        "id": "said_how_many",
+        "description": "Told 907 how many people are hurt",
+        "check": {
+          "kind": "did",
+          "actionId": "say_how_many"
+        },
+        "points": 5,
+        "critical": false,
+        "teachingPoint": "Say how many people are hurt, so 907 sends enough help.",
+        "ref": {
+          "sourceId": "ifrc2025",
+          "page": "to confirm",
+          "review": "pending"
+        }
+      },
+      {
+        "id": "said_awake",
+        "description": "Told 907 if he is awake and breathing",
+        "check": {
+          "kind": "did",
+          "actionId": "say_awake"
+        },
+        "points": 5,
+        "critical": false,
+        "teachingPoint": "Tell 907 if the person is awake and breathing. It helps them decide how fast help must come.",
+        "ref": {
+          "sourceId": "ifrc2025",
+          "page": "to confirm",
+          "review": "pending"
+        }
+      },
+      {
+        "id": "stayed_on_line",
+        "description": "Stayed on the line until the call-taker finished",
+        "check": {
+          "kind": "did",
+          "actionId": "ask_what_now"
+        },
+        "points": 5,
+        "critical": false,
+        "teachingPoint": "Do not hang up until the call-taker is done. Listen and do what they tell you.",
+        "ref": {
+          "sourceId": "ifrc2025",
+          "page": "to confirm",
+          "review": "pending"
+        }
+      },
+      {
+        "id": "kept_still",
+        "description": "Kept him still",
+        "check": {
+          "kind": "did",
+          "actionId": "keep_still"
+        },
+        "points": 5,
+        "critical": false,
+        "teachingPoint": "Do not move a hurt person unless they are in danger. Moving can make an injury worse.",
+        "ref": {
+          "sourceId": "ifrc2025",
+          "page": "to confirm",
+          "review": "pending"
+        }
+      },
+      {
+        "id": "kept_calm",
+        "description": "Kept him calm",
+        "check": {
+          "kind": "did",
+          "actionId": "reassure"
+        },
+        "points": 5,
+        "critical": false,
+        "teachingPoint": "Talk to him kindly. Tell him help is coming and that you will stay with him.",
+        "ref": {
+          "sourceId": "ifrc2025",
+          "page": "to confirm",
+          "review": "pending"
+        }
+      },
+      {
+        "id": "kept_warm",
+        "description": "Kept him warm",
+        "check": {
+          "kind": "did",
+          "actionId": "keep_warm"
+        },
+        "points": 5,
+        "critical": false,
+        "teachingPoint": "Cover him with a jacket or shawl. A hurt person gets cold easily.",
+        "ref": {
+          "sourceId": "ifrc2025",
+          "page": "to confirm",
+          "review": "pending"
+        }
+      },
+      {
+        "id": "handed_over",
+        "description": "Told the ambulance crew what happened",
+        "check": {
+          "kind": "did",
+          "actionId": "tell_crew"
+        },
+        "points": 5,
+        "critical": false,
+        "teachingPoint": "When the crew arrives, tell them what happened, what you saw and what you did.",
+        "ref": {
+          "sourceId": "ifrc2025",
+          "page": "to confirm",
+          "review": "pending"
+        }
+      }
+    ],
+    "harms": [
+      {
+        "id": "harm_road",
+        "description": "Ran into the road",
+        "actionId": "run_into_road",
+        "deduction": 20,
+        "teachingPoint": "Never go into traffic. If you are hit, two people are hurt and no one is left to help.",
+        "ref": {
+          "sourceId": "ifrc2025",
+          "page": "to confirm",
+          "review": "pending"
+        }
+      },
+      {
+        "id": "harm_stand",
+        "description": "Tried to make him stand up",
+        "actionId": "help_stand",
+        "deduction": 15,
+        "teachingPoint": "He is not in danger on the pavement, so do not move him. Standing on a hurt leg can make it worse.",
+        "ref": {
+          "sourceId": "ifrc2025",
+          "page": "to confirm",
+          "review": "pending"
+        }
+      },
+      {
+        "id": "harm_minibus",
+        "description": "Lifted him to take him in a minibus",
+        "actionId": "lift_minibus",
+        "deduction": 20,
+        "teachingPoint": "Do not lift him or take him to hospital yourselves. Moving him can make the injury worse. The ambulance crew can keep his leg still and care for him on the way.",
+        "ref": {
+          "sourceId": "ifrc2025",
+          "page": "to confirm",
+          "review": "pending"
+        }
+      },
+      {
+        "id": "harm_alone",
+        "description": "Left him alone",
+        "actionId": "leave_him",
+        "deduction": 15,
+        "teachingPoint": "Stay with him. Use your phone to call 907, and ask people nearby to help.",
+        "ref": {
+          "sourceId": "ifrc2025",
+          "page": "to confirm",
+          "review": "pending"
+        }
+      },
+      {
+        "id": "harm_hang_up",
+        "description": "Hung up before the call-taker finished",
+        "actionId": "hang_up",
+        "deduction": 10,
+        "teachingPoint": "Stay on the line. The call-taker may need more facts, and can tell you what to do.",
+        "ref": {
+          "sourceId": "ifrc2025",
+          "page": "to confirm",
+          "review": "pending"
+        }
+      }
+    ],
+    "time": {
+      "maxPoints": 10,
+      "targetMs": 100000,
+      "zeroAtMs": 220000
+    }
+  },
+  "maxDurationMs": 270000,
+  "variants": [
+    {
+      "id": "practice-a",
+      "label": "Practice A",
+      "finalOnly": false
+    },
+    {
+      "id": "final-a",
+      "label": "Final A",
+      "finalOnly": true,
+      "timelineAtMs": {
+        "minibus_idea": 12000
+      },
+      "lineSwaps": {
+        "passerby_opening": "passerby_opening_b"
+      }
+    }
+  ],
+  "disclaimer": "A practice game. It does not replace hands-on first aid training. In an emergency in Addis Ababa, call 907."
+}

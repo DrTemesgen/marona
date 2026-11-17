@@ -1,0 +1,527 @@
+{
+  "id": "ch2-cpr-school-gate",
+  "chapter": 2,
+  "title": "The teacher at the school gate",
+  "shortTitle": "CPR",
+  "version": "0.1.0",
+  "scene": "school-gate",
+  "intro": "School is over and you walk out of the gate with your friend. One of your teachers stops, holds his chest and leans on the wall. He looks pale and sweaty. You are the first to reach him.",
+  "sources": [
+    {
+      "id": "ifrc2025",
+      "title": "IFRC International First Aid, Resuscitation and Education Guidelines 2025",
+      "url": "https://www.ifrc.org/document/ifrc-international-first-aid-resuscitation-and-education-guidelines-2025"
+    }
+  ],
+  "characters": [
+    { "id": "teacher", "name": "Teacher", "role": "casualty", "description": "A teacher at your school, an adult man. He has chest pain at the school gate." },
+    { "id": "bystander", "name": "Older student", "role": "bystander", "description": "An older student who wants to help but gives wrong advice." },
+    { "id": "calltaker", "name": "907 call-taker", "role": "calltaker", "description": "The call-taker at 907, the ambulance number for Addis Ababa. A calm voice that reminds you what to do. You lead." },
+    { "id": "friend", "name": "Your friend", "role": "friend", "description": "Your classmate, who walks out of the gate with you." },
+    { "id": "guard", "name": "School guard", "role": "adult", "description": "The school guard, an adult who can take turns with you at CPR." },
+    { "id": "crew", "name": "Ambulance crew", "role": "adult", "description": "The ambulance team who take over when they arrive." }
+  ],
+  "facts": [
+    { "id": "fact_safe", "text": "He is on the pavement, away from the cars. It is safe to help him here." },
+    { "id": "fact_pain", "text": "The pain is in the middle of his chest and spreads to his left arm. It started about 10 minutes ago." },
+    { "id": "fact_aspirin", "text": "He has his own aspirin from his doctor in his bag. He says he is not allergic to it." },
+    { "id": "fact_no_response", "text": "He does not answer and does not move when you shout and tap his shoulders." },
+    { "id": "fact_gasping", "text": "He makes slow, noisy gasps. This is not normal breathing. His heart has stopped, and he needs CPR now." },
+    { "id": "fact_pulse", "text": "You cannot tell if you feel a pulse. Many seconds pass while nobody pushes on his chest." },
+    { "id": "fact_water", "text": "He is not awake and cannot swallow. Water could go into his lungs." },
+    { "id": "fact_carry", "text": "While you carry him, nobody pushes on his chest." }
+  ],
+  "phases": [
+    { "id": "chest_pain", "title": "He has chest pain" },
+    { "id": "arrest", "title": "He collapses" },
+    { "id": "handover", "title": "Help arrives" }
+  ],
+  "startPhaseId": "chest_pain",
+  "startCasualty": "chest_pain",
+  "initialFlags": { "called907": false, "adult_here": false },
+  "actions": [
+    {
+      "id": "check_danger",
+      "label": "Look around for danger, like cars",
+      "kind": "action",
+      "phases": ["chest_pain"],
+      "effects": [{ "type": "revealFact", "factId": "fact_safe" }],
+      "hint": "Before you help, make sure the place is safe for you and for him."
+    },
+    {
+      "id": "ask_pain",
+      "label": "Ask where it hurts and for how long",
+      "kind": "question",
+      "targetCharacterId": "teacher",
+      "phases": ["chest_pain"],
+      "effects": [
+        { "type": "revealFact", "factId": "fact_pain" },
+        { "type": "say", "characterId": "teacher", "lineId": "teacher_where" }
+      ],
+      "hint": "Chest pain that spreads to the arm, jaw or back can be a heart attack."
+    },
+    {
+      "id": "ask_aspirin",
+      "label": "Ask if he has his own aspirin and if he is allergic to it",
+      "kind": "question",
+      "targetCharacterId": "teacher",
+      "phases": ["chest_pain"],
+      "effects": [
+        { "type": "addCounter", "counter": "aspirin_asked", "delta": 1 },
+        { "type": "revealFact", "factId": "fact_aspirin" },
+        { "type": "say", "characterId": "teacher", "lineId": "teacher_aspirin" }
+      ],
+      "hint": "Ask, then tell 907. Do not give any medicine of your own."
+    },
+    {
+      "id": "tell_907_aspirin",
+      "label": "Tell 907 about his aspirin",
+      "kind": "call",
+      "targetCharacterId": "calltaker",
+      "phases": ["chest_pain"],
+      "requires": { "flag": "called907", "equals": true, "counter": "aspirin_asked", "atLeast": 1 },
+      "effects": [{ "type": "say", "characterId": "calltaker", "lineId": "calltaker_aspirin" }],
+      "hint": "Think about what the call-taker needs to know about him."
+    },
+    {
+      "id": "help_sit",
+      "label": "Help him sit down and rest against the wall",
+      "kind": "action",
+      "targetCharacterId": "teacher",
+      "phases": ["chest_pain"],
+      "effects": [
+        { "type": "setFlag", "flag": "resting", "value": true },
+        { "type": "say", "characterId": "teacher", "lineId": "teacher_sits" }
+      ],
+      "hint": "Resting puts less strain on his heart."
+    },
+    {
+      "id": "call_907",
+      "label": "Call 907 for an ambulance",
+      "kind": "call",
+      "targetCharacterId": "calltaker",
+      "phases": ["chest_pain"],
+      "effects": [
+        { "type": "setFlag", "flag": "called907", "value": true },
+        { "type": "say", "characterId": "calltaker", "lineId": "calltaker_answer" }
+      ],
+      "hint": "Chest pain like this is an emergency. Call 907 now. Do not wait."
+    },
+    {
+      "id": "send_friend_adult",
+      "label": "Send your friend to bring an adult",
+      "kind": "action",
+      "targetCharacterId": "friend",
+      "phases": ["chest_pain"],
+      "effects": [
+        { "type": "addCounter", "counter": "help_sent", "delta": 1 },
+        { "type": "say", "characterId": "friend", "lineId": "friend_goes" }
+      ],
+      "hint": "Get more help, but stay with him yourself."
+    },
+    {
+      "id": "check_response",
+      "label": "Shout \"Can you hear me?\" and tap both shoulders",
+      "kind": "action",
+      "targetCharacterId": "teacher",
+      "phases": ["arrest"],
+      "effects": [{ "type": "revealFact", "factId": "fact_no_response" }],
+      "hint": "First check if he responds."
+    },
+    {
+      "id": "check_breathing",
+      "label": "Look and listen for normal breathing (up to 10 seconds)",
+      "kind": "action",
+      "targetCharacterId": "teacher",
+      "phases": ["arrest"],
+      "effects": [{ "type": "revealFact", "factId": "fact_gasping" }],
+      "hint": "Slow, noisy gasps are not normal breathing."
+    },
+    {
+      "id": "tell_907_not_breathing",
+      "label": "Tell 907 he is not breathing normally, and put the phone on speaker",
+      "kind": "call",
+      "targetCharacterId": "calltaker",
+      "phases": ["arrest"],
+      "requires": { "flag": "called907", "equals": true },
+      "effects": [
+        { "type": "addCounter", "counter": "updated_907", "delta": 1 },
+        { "type": "setFlag", "flag": "speaker", "value": true },
+        { "type": "say", "characterId": "calltaker", "lineId": "calltaker_speaker" }
+      ],
+      "hint": "With the phone on speaker, your hands are free for CPR."
+    },
+    {
+      "id": "call_907_now",
+      "label": "Call 907 now: he is not breathing normally (phone on speaker)",
+      "kind": "call",
+      "targetCharacterId": "calltaker",
+      "phases": ["arrest"],
+      "requires": { "flag": "called907", "equals": false },
+      "effects": [
+        { "type": "setFlag", "flag": "called907", "value": true },
+        { "type": "addCounter", "counter": "updated_907", "delta": 1 },
+        { "type": "setFlag", "flag": "speaker", "value": true },
+        { "type": "say", "characterId": "calltaker", "lineId": "calltaker_late" }
+      ],
+      "hint": "Call 907 now and put the phone on speaker."
+    },
+    {
+      "id": "send_for_aed",
+      "label": "Send the older student to look for an AED (a machine that can shock the heart)",
+      "kind": "action",
+      "targetCharacterId": "bystander",
+      "phases": ["arrest"],
+      "effects": [
+        { "type": "addCounter", "counter": "help_sent", "delta": 1 },
+        { "type": "say", "characterId": "bystander", "lineId": "bystander_aed_go" }
+      ],
+      "hint": "Send someone else to look for an AED. You keep pushing."
+    },
+    {
+      "id": "start_compressions",
+      "label": "Push hard and fast in the middle of his chest",
+      "kind": "rhythm",
+      "targetCharacterId": "teacher",
+      "phases": ["arrest"],
+      "repeatable": true,
+      "effects": [
+        { "type": "addCounter", "counter": "compressions", "delta": 1 },
+        { "type": "setCasualty", "status": "cpr" }
+      ],
+      "hint": "Push straight down in the middle of the chest, 100 to 120 times a minute. Let the chest come back up after each push."
+    },
+    {
+      "id": "swap_rescuer",
+      "label": "Swap with the school guard: he pushes, you count",
+      "kind": "action",
+      "targetCharacterId": "guard",
+      "phases": ["arrest"],
+      "requires": { "flag": "adult_here", "equals": true, "counter": "compressions", "atLeast": 200 },
+      "effects": [
+        { "type": "setFlag", "flag": "swapped", "value": true },
+        { "type": "say", "characterId": "guard", "lineId": "guard_swap" }
+      ],
+      "hint": "CPR is tiring. Swap about every 2 minutes, with only a short pause."
+    },
+    {
+      "id": "pulse_check_long",
+      "label": "Feel for a pulse in his neck for a long time",
+      "kind": "action",
+      "targetCharacterId": "teacher",
+      "phases": ["arrest"],
+      "effects": [{ "type": "revealFact", "factId": "fact_pulse" }],
+      "hint": "Think about what this does for him right now."
+    },
+    {
+      "id": "give_water",
+      "label": "Give him some water",
+      "kind": "action",
+      "targetCharacterId": "teacher",
+      "phases": ["arrest"],
+      "effects": [{ "type": "revealFact", "factId": "fact_water" }],
+      "hint": "Think about what this does to him right now."
+    },
+    {
+      "id": "carry_to_car",
+      "label": "Carry him to a car to take him to hospital",
+      "kind": "action",
+      "targetCharacterId": "teacher",
+      "phases": ["arrest"],
+      "effects": [
+        { "type": "revealFact", "factId": "fact_carry" },
+        { "type": "setCasualty", "status": "collapsed" }
+      ],
+      "hint": "Think about what this means for him in the next few minutes."
+    }
+  ],
+  "timeline": [
+    {
+      "id": "guard_comes",
+      "afterActionId": "send_friend_adult",
+      "delayMs": 45000,
+      "effects": [
+        { "type": "setFlag", "flag": "adult_here", "value": true },
+        { "type": "say", "characterId": "guard", "lineId": "guard_comes_line" }
+      ]
+    },
+    {
+      "id": "collapse",
+      "atMs": 75000,
+      "effects": [
+        { "type": "gotoPhase", "phaseId": "arrest" },
+        { "type": "setCasualty", "status": "collapsed" },
+        { "type": "say", "characterId": "bystander", "lineId": "bystander_breathing" }
+      ]
+    },
+    {
+      "id": "guard_hears",
+      "atMs": 150000,
+      "when": { "flag": "adult_here", "equals": false },
+      "effects": [
+        { "type": "setFlag", "flag": "adult_here", "value": true },
+        { "type": "say", "characterId": "guard", "lineId": "guard_hears_line" }
+      ]
+    },
+    {
+      "id": "aed_none",
+      "afterActionId": "send_for_aed",
+      "delayMs": 60000,
+      "effects": [{ "type": "say", "characterId": "bystander", "lineId": "bystander_aed_none" }]
+    },
+    {
+      "id": "help_arrives",
+      "afterActionId": "call_907",
+      "delayMs": 360000,
+      "effects": [
+        { "type": "gotoPhase", "phaseId": "handover" },
+        { "type": "setCasualty", "status": "handover" },
+        { "type": "addCounter", "counter": "handed_over", "delta": 1 },
+        { "type": "say", "characterId": "crew", "lineId": "crew_arrives" },
+        { "type": "endGame", "outcome": "handover" }
+      ]
+    },
+    {
+      "id": "help_arrives_late",
+      "afterActionId": "call_907_now",
+      "delayMs": 360000,
+      "effects": [
+        { "type": "gotoPhase", "phaseId": "handover" },
+        { "type": "setCasualty", "status": "handover" },
+        { "type": "addCounter", "counter": "handed_over", "delta": 1 },
+        { "type": "say", "characterId": "crew", "lineId": "crew_arrives" },
+        { "type": "endGame", "outcome": "handover" }
+      ]
+    }
+  ],
+  "lines": [
+    { "id": "teacher_opening", "characterId": "teacher", "text": "Ah... my chest. It hurts. It feels heavy, like something is pressing on it.", "emotion": "pain" },
+    { "id": "teacher_where", "characterId": "teacher", "text": "Here, in the middle of my chest. It goes down my left arm. It started about ten minutes ago.", "emotion": "pain" },
+    { "id": "teacher_aspirin", "characterId": "teacher", "text": "My doctor gave me aspirin. It is in my bag. I am not allergic to it.", "emotion": "pain" },
+    { "id": "teacher_sits", "characterId": "teacher", "text": "Thank you. Sitting down is a little better.", "emotion": "pain" },
+    { "id": "friend_goes", "characterId": "friend", "text": "OK! I will run and bring the school guard.", "emotion": "worried" },
+    { "id": "guard_comes_line", "characterId": "guard", "text": "I am here. Your friend told me. What do you need me to do?", "emotion": "worried" },
+    { "id": "guard_hears_line", "characterId": "guard", "text": "I heard shouting from the gate. I am the school guard. How can I help?", "emotion": "worried" },
+    {
+      "id": "calltaker_answer",
+      "characterId": "calltaker",
+      "text": "907 ambulance. An ambulance is coming to the school gate. Keep him resting and stay with him. If he stops answering you, tell me at once.",
+      "emotion": "calm",
+      "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+    },
+    {
+      "id": "calltaker_aspirin",
+      "characterId": "calltaker",
+      "text": "Thank you. If he is fully awake and not allergic, he can chew his own aspirin, as his doctor told him. Give him nothing else.",
+      "emotion": "calm",
+      "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+    },
+    {
+      "id": "bystander_breathing",
+      "characterId": "bystander",
+      "text": "Look, he is still breathing. Let him rest. Do not touch him.",
+      "emotion": "worried",
+      "wrongAdvice": true,
+      "correctionHarmId": "harm_pulse",
+      "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+    },
+    {
+      "id": "bystander_breathing_b",
+      "characterId": "bystander",
+      "text": "He is snoring, so he is breathing. Leave him, he will wake up.",
+      "emotion": "worried",
+      "wrongAdvice": true,
+      "correctionHarmId": "harm_pulse",
+      "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+    },
+    {
+      "id": "bystander_breathing_c",
+      "characterId": "bystander",
+      "text": "I can hear him breathing. He has only fainted. Give him a minute.",
+      "emotion": "neutral",
+      "wrongAdvice": true,
+      "correctionHarmId": "harm_pulse",
+      "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+    },
+    {
+      "id": "calltaker_speaker",
+      "characterId": "calltaker",
+      "text": "Thank you for telling me. Push hard and fast in the middle of his chest and keep going. The ambulance is on its way.",
+      "emotion": "calm",
+      "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+    },
+    {
+      "id": "calltaker_late",
+      "characterId": "calltaker",
+      "text": "907 ambulance. An ambulance is coming to the school gate. If he is not breathing normally, push hard and fast in the middle of his chest. Keep going.",
+      "emotion": "calm",
+      "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+    },
+    { "id": "bystander_aed_go", "characterId": "bystander", "text": "OK. I will look for one at the school office and the shops.", "emotion": "worried" },
+    {
+      "id": "bystander_aed_none",
+      "characterId": "bystander",
+      "text": "I looked everywhere. There is no AED near here. Keep pushing!",
+      "emotion": "worried",
+      "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+    },
+    {
+      "id": "guard_swap",
+      "characterId": "guard",
+      "text": "My turn. I will push now. You count out loud with me, and we swap again when I get tired.",
+      "emotion": "calm",
+      "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+    },
+    { "id": "crew_arrives", "characterId": "crew", "text": "We are the ambulance crew. We will take over now. Tell us what happened.", "emotion": "calm" }
+  ],
+  "openingLineIds": ["teacher_opening"],
+  "rubric": {
+    "items": [
+      {
+        "id": "called_907_early",
+        "description": "Called 907 while he still had chest pain",
+        "check": { "kind": "did", "actionId": "call_907" },
+        "points": 14,
+        "critical": true,
+        "teachingPoint": "Chest pain that spreads to the arm can be a heart attack. Call 907 at once. Do not wait to see if it gets worse.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      },
+      {
+        "id": "checked_danger",
+        "description": "Looked for danger before helping",
+        "check": { "kind": "did", "actionId": "check_danger" },
+        "points": 4,
+        "critical": false,
+        "teachingPoint": "Look for danger first, such as traffic, so that you do not get hurt too.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      },
+      {
+        "id": "checked_response",
+        "description": "Checked if he responds",
+        "check": { "kind": "did", "actionId": "check_response" },
+        "points": 6,
+        "critical": false,
+        "teachingPoint": "Shout and tap both shoulders to see if he answers.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      },
+      {
+        "id": "checked_breathing",
+        "description": "Checked for normal breathing",
+        "check": { "kind": "did", "actionId": "check_breathing" },
+        "points": 8,
+        "critical": false,
+        "teachingPoint": "Look and listen for up to 10 seconds. Slow, noisy gasps are not normal breathing. Do not let anyone tell you he is fine.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      },
+      {
+        "id": "told_907_arrest",
+        "description": "Told 907 he is not breathing normally, with the phone on speaker",
+        "check": { "kind": "countAtLeast", "counter": "updated_907", "min": 1 },
+        "points": 5,
+        "critical": false,
+        "teachingPoint": "Tell 907 he is not breathing normally. Put the phone on speaker so your hands are free.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      },
+      {
+        "id": "compressions_started",
+        "description": "Started pushing on his chest within 60 seconds of the collapse",
+        "check": { "kind": "didWithin", "actionId": "start_compressions", "withinMs": 60000, "fromEventId": "collapse" },
+        "points": 18,
+        "critical": true,
+        "teachingPoint": "Start pushing on the chest as soon as you see he is not breathing normally. Every minute without CPR lowers his chance.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      },
+      {
+        "id": "rate_ok",
+        "description": "Pushed at 100 to 120 a minute for most sets",
+        "check": { "kind": "rateInRange", "actionId": "start_compressions", "minBpm": 100, "maxBpm": 120, "minShare": 0.7 },
+        "points": 12,
+        "critical": false,
+        "teachingPoint": "Push 100 to 120 times a minute. A hands-on class teaches the depth: 5 to 6 cm.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      },
+      {
+        "id": "enough_compressions",
+        "description": "Gave at least 300 chest pushes",
+        "check": { "kind": "countAtLeast", "counter": "compressions", "min": 300 },
+        "points": 8,
+        "critical": false,
+        "teachingPoint": "Keep pushing, with as few pauses as you can, until trained help takes over.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      },
+      {
+        "id": "help_sent",
+        "description": "Sent someone for an adult or an AED",
+        "check": { "kind": "countAtLeast", "counter": "help_sent", "min": 1 },
+        "points": 5,
+        "critical": false,
+        "teachingPoint": "Send other people to bring adults and an AED. You stay with him.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      },
+      {
+        "id": "swapped",
+        "description": "Swapped with another rescuer",
+        "check": { "kind": "did", "actionId": "swap_rescuer" },
+        "points": 5,
+        "critical": false,
+        "teachingPoint": "CPR is tiring. Swap with another person about every 2 minutes, with only a short pause.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      },
+      {
+        "id": "stayed_to_handover",
+        "description": "Kept going until the ambulance crew took over",
+        "check": { "kind": "countAtLeast", "counter": "handed_over", "min": 1 },
+        "points": 5,
+        "critical": false,
+        "teachingPoint": "Do not stop CPR until trained help takes over or he starts breathing normally.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      }
+    ],
+    "harms": [
+      {
+        "id": "harm_pulse",
+        "description": "Spent a long time feeling for a pulse",
+        "actionId": "pulse_check_long",
+        "deduction": 10,
+        "teachingPoint": "Do not spend time feeling for a pulse. If he is not breathing normally, start CPR at once.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      },
+      {
+        "id": "harm_water",
+        "description": "Gave water to someone who is not awake",
+        "actionId": "give_water",
+        "deduction": 10,
+        "teachingPoint": "Never give food or drink to someone who is not fully awake. It can choke him.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      },
+      {
+        "id": "harm_carry",
+        "description": "Carried him to a car instead of doing CPR",
+        "actionId": "carry_to_car",
+        "deduction": 15,
+        "teachingPoint": "Moving him stops CPR. Push on his chest where he lies, and let the ambulance come to you.",
+        "ref": { "sourceId": "ifrc2025", "page": "to confirm", "review": "pending" }
+      }
+    ],
+    "time": { "maxPoints": 10, "targetMs": 400000, "zeroAtMs": 560000 }
+  },
+  "maxDurationMs": 560000,
+  "variants": [
+    { "id": "practice-a", "label": "Practice A", "finalOnly": false },
+    {
+      "id": "practice-b",
+      "label": "Practice B",
+      "finalOnly": false,
+      "timelineAtMs": { "collapse": 50000 },
+      "lineSwaps": { "bystander_breathing": "bystander_breathing_b" }
+    },
+    {
+      "id": "final-a",
+      "label": "Final A",
+      "finalOnly": true,
+      "timelineAtMs": { "collapse": 55000 },
+      "lineSwaps": { "bystander_breathing": "bystander_breathing_c" }
+    }
+  ],
+  "disclaimer": "A practice game. It does not replace hands-on first aid training. In an emergency in Addis Ababa, call 907."
+}

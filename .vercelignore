@@ -1,0 +1,12 @@
+# Uploaded by "vercel deploy": the source only. Vercel installs and builds it itself.
+node_modules
+dist
+dev-dist
+.vercel
+data
+*.db
+*.db-*
+.env*
+test-results
+playwright-report
+docs

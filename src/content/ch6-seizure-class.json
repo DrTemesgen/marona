@@ -1,0 +1,582 @@
+{
+  "id": "ch6-seizure-class",
+  "chapter": 6,
+  "title": "A classmate falls in class",
+  "shortTitle": "Seizure in class",
+  "version": "0.1.0",
+  "scene": "classroom",
+  "intro": "It is the start of a lesson and the teacher has not come in yet. Suddenly a classmate falls off his chair. He is on the floor, and his arms and legs are jerking and shaking. Some students scream. Desks and chairs are close around him. There is a clock on the wall.",
+  "sources": [
+    {
+      "id": "ifrc2025",
+      "title": "IFRC International First Aid, Resuscitation and Education Guidelines 2025",
+      "url": "https://www.ifrc.org/document/ifrc-international-first-aid-resuscitation-and-education-guidelines-2025"
+    }
+  ],
+  "characters": [
+    {
+      "id": "classmate",
+      "name": "Your classmate",
+      "role": "casualty",
+      "description": "A boy in your class. He fell off his chair and is having a seizure: his arms and legs are jerking."
+    },
+    {
+      "id": "deskmate",
+      "name": "His deskmate",
+      "role": "friend",
+      "description": "Sits next to him and knows him well. Scared, but helps when you tell him what to do."
+    },
+    {
+      "id": "loud_student",
+      "name": "Student at the back",
+      "role": "bystander",
+      "description": "A classmate who shouts out advice. He wants to help, but his advice is wrong."
+    },
+    {
+      "id": "calltaker",
+      "name": "907 call-taker",
+      "role": "calltaker",
+      "description": "The ambulance call-taker on 907. Asks what is happening and reminds you what to do."
+    },
+    {
+      "id": "crew",
+      "name": "Ambulance crew",
+      "role": "adult",
+      "description": "The ambulance team. They take over when they arrive."
+    },
+    {
+      "id": "teacher",
+      "name": "Your teacher",
+      "role": "adult",
+      "description": "Comes into the classroom a few minutes later and takes over."
+    }
+  ],
+  "facts": [
+    { "id": "start_time", "text": "You look at the clock on the wall. The shaking started at 10:15." },
+    { "id": "head_hit", "text": "He hit his head hard on the desk as he fell." },
+    { "id": "five_minutes", "text": "The clock says 10:20. The shaking has gone on for 5 minutes." },
+    { "id": "stopped", "text": "The shaking has stopped. He is lying still with his eyes closed." },
+    { "id": "breathing_normal", "text": "He is breathing normally." }
+  ],
+  "phases": [
+    { "id": "seizure", "title": "He is shaking" },
+    { "id": "after", "title": "The shaking has stopped" },
+    { "id": "handover", "title": "Help is here" }
+  ],
+  "startPhaseId": "seizure",
+  "startCasualty": "seizure",
+  "initialFlags": {
+    "call_needed": true,
+    "injured": false,
+    "timed": false,
+    "breathing_checked": false
+  },
+  "actions": [
+    {
+      "id": "note_time",
+      "label": "Note the time",
+      "kind": "action",
+      "phases": ["seizure"],
+      "repeatable": false,
+      "effects": [
+        { "type": "setFlag", "flag": "timed", "value": true },
+        { "type": "revealFact", "factId": "start_time" }
+      ],
+      "hint": "Stay calm and look at the clock. You need to know if the shaking goes past 5 minutes."
+    },
+    {
+      "id": "clear_space",
+      "label": "Move hard things away",
+      "kind": "action",
+      "phases": ["seizure"],
+      "repeatable": false,
+      "effects": [{ "type": "say", "characterId": "deskmate", "lineId": "deskmate_desks" }],
+      "hint": "Push desks and chairs away so he cannot hit them."
+    },
+    {
+      "id": "cushion_head",
+      "label": "Cushion his head",
+      "kind": "action",
+      "phases": ["seizure"],
+      "repeatable": false,
+      "effects": [{ "type": "say", "characterId": "deskmate", "lineId": "deskmate_jacket" }],
+      "hint": "Put something soft under his head, like a folded jacket."
+    },
+    {
+      "id": "ask_history",
+      "label": "His first seizure?",
+      "kind": "question",
+      "targetCharacterId": "deskmate",
+      "phases": ["seizure", "after"],
+      "repeatable": false,
+      "effects": [{ "type": "say", "characterId": "deskmate", "lineId": "deskmate_history" }],
+      "hint": "Ask his friend if this has happened before. A first seizure always needs 907."
+    },
+    {
+      "id": "call_907_early",
+      "label": "Call 907",
+      "kind": "call",
+      "targetCharacterId": "calltaker",
+      "phases": ["seizure", "after"],
+      "repeatable": false,
+      "requires": { "flag": "call_needed", "equals": false },
+      "effects": [
+        { "type": "setFlag", "flag": "called_early", "value": true },
+        { "type": "say", "characterId": "calltaker", "lineId": "calltaker_answer" },
+        { "type": "say", "characterId": "calltaker", "lineId": "calltaker_wait" }
+      ],
+      "hint": "Call 907 if the shaking lasts over 5 minutes, if it is a first seizure, if he is hurt or has trouble breathing, or if another seizure starts."
+    },
+    {
+      "id": "call_907",
+      "label": "Call 907",
+      "kind": "call",
+      "targetCharacterId": "calltaker",
+      "phases": ["seizure", "after"],
+      "repeatable": false,
+      "requires": { "flag": "call_needed", "equals": true },
+      "effects": [
+        { "type": "setFlag", "flag": "called_907", "value": true },
+        { "type": "say", "characterId": "calltaker", "lineId": "calltaker_answer" },
+        { "type": "say", "characterId": "calltaker", "lineId": "calltaker_dispatch" }
+      ],
+      "hint": "Call 907 if the shaking lasts over 5 minutes, if it is a first seizure, if he is hurt or has trouble breathing, or if another seizure starts."
+    },
+    {
+      "id": "harm_hold_down",
+      "label": "Hold him down",
+      "kind": "action",
+      "phases": ["seizure"],
+      "repeatable": false,
+      "effects": [{ "type": "say", "characterId": "deskmate", "lineId": "deskmate_holddown" }],
+      "hint": "Can holding him stop a seizure, or could it hurt him?"
+    },
+    {
+      "id": "harm_tongue",
+      "label": "Hold his tongue",
+      "kind": "action",
+      "phases": ["seizure"],
+      "repeatable": false,
+      "effects": [{ "type": "say", "characterId": "deskmate", "lineId": "deskmate_tongue" }],
+      "hint": "Is it safe to put fingers, or anything else, in his mouth?"
+    },
+    {
+      "id": "harm_water",
+      "label": "Pour water on his face",
+      "kind": "action",
+      "phases": ["seizure", "after"],
+      "repeatable": false,
+      "effects": [{ "type": "say", "characterId": "deskmate", "lineId": "deskmate_water" }],
+      "hint": "Could water stop a seizure, or could he breathe it in?"
+    },
+    {
+      "id": "check_breathing",
+      "label": "Check his breathing",
+      "kind": "action",
+      "targetCharacterId": "classmate",
+      "phases": ["after", "handover"],
+      "repeatable": false,
+      "effects": [
+        { "type": "setFlag", "flag": "breathing_checked", "value": true },
+        { "type": "revealFact", "factId": "breathing_normal" }
+      ],
+      "hint": "When the shaking stops, look and listen: is he breathing normally?"
+    },
+    {
+      "id": "recovery_position",
+      "label": "Put him on his side",
+      "kind": "action",
+      "targetCharacterId": "classmate",
+      "phases": ["after", "handover"],
+      "repeatable": false,
+      "requires": { "flag": "breathing_checked", "equals": true },
+      "effects": [{ "type": "setCasualty", "status": "recovery" }],
+      "hint": "Breathing normally? Roll him onto his side. This keeps his airway clear while he wakes up."
+    },
+    {
+      "id": "stay_with",
+      "label": "Stay and talk calmly",
+      "kind": "action",
+      "targetCharacterId": "classmate",
+      "phases": ["after", "handover"],
+      "repeatable": false,
+      "effects": [{ "type": "say", "characterId": "deskmate", "lineId": "deskmate_stay" }],
+      "hint": "Stay with him until he is fully awake. Tell him calmly what happened."
+    },
+    {
+      "id": "hand_over",
+      "label": "Tell what happened",
+      "kind": "action",
+      "phases": ["handover"],
+      "repeatable": false,
+      "effects": [{ "type": "endGame", "outcome": "handover" }],
+      "hint": "Tell them when the shaking started, how long it lasted and what you did."
+    }
+  ],
+  "timeline": [
+    {
+      "id": "call_needed",
+      "atMs": 1000,
+      "effects": [{ "type": "setFlag", "flag": "call_needed", "value": true }]
+    },
+    {
+      "id": "injury_seen",
+      "atMs": 4000,
+      "when": { "flag": "injured", "equals": true },
+      "effects": [
+        { "type": "revealFact", "factId": "head_hit" },
+        { "type": "say", "characterId": "deskmate", "lineId": "deskmate_head" }
+      ]
+    },
+    {
+      "id": "tongue_advice",
+      "atMs": 8000,
+      "when": { "phaseId": "seizure" },
+      "effects": [{ "type": "say", "characterId": "loud_student", "lineId": "loud_tongue" }]
+    },
+    {
+      "id": "water_advice",
+      "atMs": 30000,
+      "when": { "phaseId": "seizure" },
+      "effects": [{ "type": "say", "characterId": "loud_student", "lineId": "loud_water" }]
+    },
+    {
+      "id": "still_going",
+      "atMs": 150000,
+      "when": { "phaseId": "seizure" },
+      "effects": [{ "type": "say", "characterId": "deskmate", "lineId": "deskmate_long" }]
+    },
+    {
+      "id": "five_min_timed",
+      "atMs": 300000,
+      "when": { "flag": "timed", "equals": true, "phaseId": "seizure" },
+      "effects": [
+        { "type": "revealFact", "factId": "five_minutes" },
+        { "type": "say", "characterId": "deskmate", "lineId": "deskmate_five" }
+      ]
+    },
+    {
+      "id": "five_min_untimed",
+      "atMs": 300000,
+      "when": { "flag": "timed", "equals": false, "phaseId": "seizure" },
+      "effects": [{ "type": "say", "characterId": "deskmate", "lineId": "deskmate_five_untimed" }]
+    },
+    {
+      "id": "seizure_stops",
+      "atMs": 90000,
+      "effects": [
+        { "type": "gotoPhase", "phaseId": "after" },
+        { "type": "setCasualty", "status": "collapsed" },
+        { "type": "revealFact", "factId": "stopped" },
+        { "type": "say", "characterId": "deskmate", "lineId": "deskmate_stopped" }
+      ]
+    },
+    {
+      "id": "wakes_up",
+      "afterActionId": "recovery_position",
+      "delayMs": 12000,
+      "effects": [
+        { "type": "setCasualty", "status": "recovered" },
+        { "type": "say", "characterId": "classmate", "lineId": "classmate_wakes" }
+      ]
+    },
+    {
+      "id": "crew_arrives",
+      "afterActionId": "call_907",
+      "delayMs": 120000,
+      "when": { "phaseId": "after" },
+      "effects": [
+        { "type": "gotoPhase", "phaseId": "handover" },
+        { "type": "setCasualty", "status": "handover" },
+        { "type": "say", "characterId": "crew", "lineId": "crew_arrive" }
+      ]
+    },
+    {
+      "id": "teacher_arrives",
+      "atMs": 200000,
+      "when": { "phaseId": "after" },
+      "effects": [
+        { "type": "gotoPhase", "phaseId": "handover" },
+        { "type": "setCasualty", "status": "handover" },
+        { "type": "say", "characterId": "teacher", "lineId": "teacher_arrive" }
+      ]
+    }
+  ],
+  "lines": [
+    {
+      "id": "deskmate_open",
+      "characterId": "deskmate",
+      "text": "He fell off his chair! He is shaking all over!",
+      "emotion": "panicked"
+    },
+    {
+      "id": "loud_tongue",
+      "characterId": "loud_student",
+      "text": "Hold his tongue so he does not swallow it.",
+      "emotion": "panicked",
+      "wrongAdvice": true,
+      "correctionHarmId": "h_tongue",
+      "ref": { "sourceId": "ifrc2025", "page": "399-400", "review": "pending" }
+    },
+    {
+      "id": "loud_water",
+      "characterId": "loud_student",
+      "text": "Pour water on his face.",
+      "emotion": "worried",
+      "wrongAdvice": true,
+      "correctionHarmId": "h_water",
+      "ref": { "sourceId": "ifrc2025", "page": "399-400", "review": "pending" }
+    },
+    {
+      "id": "deskmate_head",
+      "characterId": "deskmate",
+      "text": "He hit his head hard on the desk when he fell!",
+      "emotion": "panicked"
+    },
+    {
+      "id": "deskmate_history",
+      "characterId": "deskmate",
+      "text": "He has epilepsy. His seizures usually stop in a minute or two.",
+      "emotion": "worried"
+    },
+    {
+      "id": "deskmate_history_first",
+      "characterId": "deskmate",
+      "text": "No! I have never seen this happen to him before!",
+      "emotion": "panicked"
+    },
+    {
+      "id": "deskmate_desks",
+      "characterId": "deskmate",
+      "text": "I will help you push the desks and chairs back.",
+      "emotion": "calm"
+    },
+    {
+      "id": "deskmate_jacket",
+      "characterId": "deskmate",
+      "text": "Here, use my jacket under his head.",
+      "emotion": "calm",
+      "ref": { "sourceId": "ifrc2025", "page": "399-400", "review": "pending" }
+    },
+    {
+      "id": "calltaker_answer",
+      "characterId": "calltaker",
+      "text": "907. Is he breathing, and how long has he been shaking?",
+      "emotion": "calm"
+    },
+    {
+      "id": "calltaker_dispatch",
+      "characterId": "calltaker",
+      "text": "An ambulance is coming. Keep hard things away and do not hold him down. Put nothing in his mouth. When the shaking stops, check his breathing and put him on his side.",
+      "emotion": "calm",
+      "ref": { "sourceId": "ifrc2025", "page": "399-400", "review": "pending" }
+    },
+    {
+      "id": "calltaker_wait",
+      "characterId": "calltaker",
+      "text": "Stay with him and keep timing it. Call us back at once if it lasts more than 5 minutes, if he is hurt or has trouble breathing, or if another seizure starts.",
+      "emotion": "calm",
+      "ref": { "sourceId": "ifrc2025", "page": "399-400", "review": "pending" }
+    },
+    {
+      "id": "deskmate_holddown",
+      "characterId": "deskmate",
+      "text": "Holding him is not stopping it, and you could hurt him!",
+      "emotion": "worried",
+      "ref": { "sourceId": "ifrc2025", "page": "399-400", "review": "pending" }
+    },
+    {
+      "id": "deskmate_tongue",
+      "characterId": "deskmate",
+      "text": "He bit down on your fingers! Now he is coughing!",
+      "emotion": "panicked"
+    },
+    {
+      "id": "deskmate_water",
+      "characterId": "deskmate",
+      "text": "He is coughing! The water went into his mouth and nose!",
+      "emotion": "panicked"
+    },
+    {
+      "id": "deskmate_long",
+      "characterId": "deskmate",
+      "text": "It is still going! It usually stops by now!",
+      "emotion": "worried"
+    },
+    {
+      "id": "deskmate_five",
+      "characterId": "deskmate",
+      "text": "It has been 5 minutes by the clock, and he is still shaking!",
+      "emotion": "panicked"
+    },
+    {
+      "id": "deskmate_five_untimed",
+      "characterId": "deskmate",
+      "text": "This is going on so long! How long has it been?",
+      "emotion": "panicked"
+    },
+    {
+      "id": "deskmate_stopped",
+      "characterId": "deskmate",
+      "text": "The shaking has stopped! He is lying still. Is he OK?",
+      "emotion": "worried"
+    },
+    {
+      "id": "deskmate_stay",
+      "characterId": "deskmate",
+      "text": "OK. We will stay right here with him.",
+      "emotion": "calm"
+    },
+    {
+      "id": "classmate_wakes",
+      "characterId": "classmate",
+      "text": "Mm... what happened? Why am I on the floor?",
+      "emotion": "worried"
+    },
+    {
+      "id": "crew_arrive",
+      "characterId": "crew",
+      "text": "Ambulance team. Thank you for looking after him. Can you tell us what happened?",
+      "emotion": "calm"
+    },
+    {
+      "id": "teacher_arrive",
+      "characterId": "teacher",
+      "text": "I am here now. Well done. I will stay with him and make sure help is on the way.",
+      "emotion": "calm"
+    }
+  ],
+  "openingLineIds": ["deskmate_open"],
+  "rubric": {
+    "items": [
+      {
+        "id": "note_time",
+        "description": "Stayed calm and noted the time",
+        "check": { "kind": "didWithin", "actionId": "note_time", "withinMs": 20000 },
+        "points": 15,
+        "critical": true,
+        "teachingPoint": "Stay calm and note the time when the shaking starts. If it lasts more than 5 minutes, call 907.",
+        "ref": { "sourceId": "ifrc2025", "page": "399-400", "review": "pending" }
+      },
+      {
+        "id": "clear_space",
+        "description": "Moved hard things away",
+        "check": { "kind": "didWithin", "actionId": "clear_space", "withinMs": 30000 },
+        "points": 10,
+        "critical": true,
+        "teachingPoint": "Move desks, chairs and other hard things away so he cannot hurt himself.",
+        "ref": { "sourceId": "ifrc2025", "page": "399-400", "review": "pending" }
+      },
+      {
+        "id": "cushion_head",
+        "description": "Cushioned his head",
+        "check": { "kind": "didWithin", "actionId": "cushion_head", "withinMs": 30000 },
+        "points": 10,
+        "critical": true,
+        "teachingPoint": "Put something soft under his head, like a folded jacket.",
+        "ref": { "sourceId": "ifrc2025", "page": "399-400", "review": "pending" }
+      },
+      {
+        "id": "call_when_needed",
+        "description": "Called 907 when it was needed",
+        "check": { "kind": "didWithin", "actionId": "call_907", "withinMs": 45000, "fromEventId": "call_needed" },
+        "points": 15,
+        "critical": true,
+        "teachingPoint": "Call 907 if the seizure lasts more than 5 minutes, if it is a first seizure, if the person is hurt or has trouble breathing, or if another seizure follows.",
+        "ref": { "sourceId": "ifrc2025", "page": "399-400", "review": "pending" },
+        "appliesWhen": { "flag": "call_needed" }
+      },
+      {
+        "id": "check_breathing",
+        "description": "Checked his breathing when the shaking stopped",
+        "check": { "kind": "didWithin", "actionId": "check_breathing", "withinMs": 30000, "fromEventId": "seizure_stops" },
+        "points": 10,
+        "critical": true,
+        "teachingPoint": "When the shaking stops, check that he is breathing normally.",
+        "ref": { "sourceId": "ifrc2025", "page": "399-400", "review": "pending" }
+      },
+      {
+        "id": "recovery_position",
+        "description": "Put him on his side once he was breathing normally",
+        "check": { "kind": "did", "actionId": "recovery_position" },
+        "points": 15,
+        "critical": true,
+        "teachingPoint": "Once he is breathing normally, put him on his side. This keeps his airway open while he wakes up.",
+        "ref": { "sourceId": "ifrc2025", "page": "399-400", "review": "pending" }
+      },
+      {
+        "id": "stay_with",
+        "description": "Stayed with him and talked calmly",
+        "check": { "kind": "did", "actionId": "stay_with" },
+        "points": 10,
+        "critical": false,
+        "teachingPoint": "Stay with him until he is fully awake. Talk calmly and tell him what happened.",
+        "ref": { "sourceId": "ifrc2025", "page": "399-400", "review": "pending" }
+      },
+      {
+        "id": "ask_history",
+        "description": "Asked if this had happened before",
+        "check": { "kind": "did", "actionId": "ask_history" },
+        "points": 5,
+        "critical": false,
+        "teachingPoint": "Find out if this is his first seizure. A first seizure always needs 907.",
+        "ref": { "sourceId": "ifrc2025", "page": "399-400", "review": "pending" }
+      }
+    ],
+    "harms": [
+      {
+        "id": "h_hold_down",
+        "description": "Held him down",
+        "actionId": "harm_hold_down",
+        "deduction": 20,
+        "teachingPoint": "Do not hold a person down during a seizure. It does not stop the seizure, and it can hurt them or you.",
+        "ref": { "sourceId": "ifrc2025", "page": "399-400", "review": "pending" }
+      },
+      {
+        "id": "h_tongue",
+        "description": "Put fingers in his mouth to hold his tongue",
+        "actionId": "harm_tongue",
+        "deduction": 30,
+        "teachingPoint": "Put nothing in the mouth. A person cannot swallow their tongue. Fingers or objects can break teeth, block the airway or get bitten.",
+        "ref": { "sourceId": "ifrc2025", "page": "399-400", "review": "pending" }
+      },
+      {
+        "id": "h_water",
+        "description": "Poured water on his face",
+        "actionId": "harm_water",
+        "deduction": 20,
+        "teachingPoint": "Water does not stop a seizure, and he could breathe it in. Keep him safe and let the shaking stop by itself.",
+        "ref": { "sourceId": "ifrc2025", "page": "399-400", "review": "pending" }
+      }
+    ],
+    "time": { "maxPoints": 10, "targetMs": 180000, "zeroAtMs": 360000 }
+  },
+  "maxDurationMs": 360000,
+  "variants": [
+    {
+      "id": "practice-a",
+      "label": "Practice A",
+      "finalOnly": false,
+      "flags": { "call_needed": true, "injured": false },
+      "timelineAtMs": {},
+      "lineSwaps": { "deskmate_history": "deskmate_history_first" }
+    },
+    {
+      "id": "practice-b",
+      "label": "Practice B",
+      "finalOnly": false,
+      "flags": { "call_needed": true, "injured": true },
+      "timelineAtMs": { "seizure_stops": 80000 },
+      "lineSwaps": {}
+    },
+    {
+      "id": "final-a",
+      "label": "Final A",
+      "finalOnly": true,
+      "flags": { "call_needed": false, "injured": false },
+      "timelineAtMs": { "call_needed": 300000, "seizure_stops": 315000, "teacher_arrives": 350000 },
+      "lineSwaps": {}
+    }
+  ],
+  "disclaimer": "A practice game. It does not replace hands-on first aid training. In an emergency in Addis Ababa, call 907."
+}

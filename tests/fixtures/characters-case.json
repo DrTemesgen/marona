@@ -1,0 +1,109 @@
+{
+  "id": "fixture-characters",
+  "chapter": 2,
+  "title": "Fixture: the teacher collapses at the gate (character layer tests)",
+  "shortTitle": "Fixture",
+  "version": "0.0.1",
+  "scene": "school-gate",
+  "intro": "Test fixture for the character layer and the safety filter. Not a playable chapter.",
+  "sources": [{ "id": "src1", "title": "Test guideline source", "url": "https://example.org/guidelines" }],
+  "characters": [
+    { "id": "teacher", "name": "The teacher", "role": "casualty", "description": "A teacher with chest pain who then collapses." },
+    { "id": "shopkeeper", "name": "The shopkeeper", "role": "bystander", "description": "A worried adult who gives one piece of planned wrong advice." },
+    { "id": "calltaker", "name": "The 907 call-taker", "role": "calltaker", "description": "Answers the 907 call and coaches hands-only CPR." }
+  ],
+  "facts": [{ "id": "f-gasping", "text": "The teacher is gasping. Gasping is not normal breathing." }],
+  "phases": [
+    { "id": "p-collapse", "title": "Collapse" },
+    { "id": "p-cpr", "title": "CPR" }
+  ],
+  "startPhaseId": "p-collapse",
+  "startCasualty": "collapsed",
+  "initialFlags": {},
+  "actions": [
+    {
+      "id": "a-call",
+      "label": "Call 907",
+      "kind": "call",
+      "targetCharacterId": "calltaker",
+      "phases": ["p-collapse"],
+      "effects": [
+        { "type": "say", "characterId": "calltaker", "lineId": "ct-answer" },
+        { "type": "gotoPhase", "phaseId": "p-cpr" }
+      ]
+    },
+    {
+      "id": "a-push",
+      "label": "Push on the chest",
+      "kind": "rhythm",
+      "phases": ["p-cpr"],
+      "repeatable": true,
+      "effects": [{ "type": "addCounter", "counter": "pushSets", "delta": 1 }]
+    }
+  ],
+  "timeline": [
+    { "id": "e-gasp", "atMs": 5000, "effects": [{ "type": "say", "characterId": "shopkeeper", "lineId": "by-still-breathing" }] }
+  ],
+  "lines": [
+    { "id": "te-pain", "characterId": "teacher", "text": "My chest hurts. I need to sit down.", "emotion": "pain" },
+    { "id": "by-help", "characterId": "shopkeeper", "text": "Somebody help! The teacher has fallen down!", "emotion": "panicked" },
+    {
+      "id": "by-still-breathing",
+      "characterId": "shopkeeper",
+      "text": "Wait, he is still breathing. Let him rest.",
+      "emotion": "worried",
+      "wrongAdvice": true,
+      "ref": { "sourceId": "src1", "page": "to confirm", "review": "pending" }
+    },
+    { "id": "ct-answer", "characterId": "calltaker", "text": "907, ambulance. Is he awake? Is he breathing normally?", "emotion": "calm" },
+    {
+      "id": "ct-gasping",
+      "characterId": "calltaker",
+      "text": "Gasping is not normal breathing. Start CPR now.",
+      "emotion": "calm",
+      "ref": { "sourceId": "src1", "page": "to confirm", "review": "pending" }
+    },
+    {
+      "id": "ct-cpr",
+      "characterId": "calltaker",
+      "text": "Push hard and fast in the middle of the chest, 5 to 6 cm deep, 100 to 120 times a minute.",
+      "emotion": "calm",
+      "ref": { "sourceId": "src1", "page": "to confirm", "review": "pending" }
+    },
+    {
+      "id": "ct-swap",
+      "characterId": "calltaker",
+      "text": "Swap with another person every 2 minutes so the pushes stay strong.",
+      "emotion": "calm",
+      "ref": { "sourceId": "src1", "page": "to confirm", "review": "pending" }
+    }
+  ],
+  "openingLineIds": ["te-pain"],
+  "rubric": {
+    "items": [
+      {
+        "id": "r-call",
+        "description": "Called 907",
+        "check": { "kind": "did", "actionId": "a-call" },
+        "points": 40,
+        "critical": true,
+        "teachingPoint": "Call 907 early and put the phone on speaker.",
+        "ref": { "sourceId": "src1", "page": "to confirm", "review": "pending" }
+      },
+      {
+        "id": "r-push",
+        "description": "Pushed at 100 to 120 per minute",
+        "check": { "kind": "rateInRange", "actionId": "a-push", "minBpm": 100, "maxBpm": 120, "minShare": 0.7 },
+        "points": 50,
+        "critical": true,
+        "teachingPoint": "Push hard and fast, 100 to 120 times a minute.",
+        "ref": { "sourceId": "src1", "page": "to confirm", "review": "pending" }
+      }
+    ],
+    "harms": [],
+    "time": { "maxPoints": 10, "targetMs": 60000, "zeroAtMs": 180000 }
+  },
+  "maxDurationMs": 300000,
+  "variants": [{ "id": "v-default", "label": "Default" }],
+  "disclaimer": "Test fixture only. Not first aid advice."
+}
